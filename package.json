@@ -1,0 +1,31 @@
+{
+  "name": "cctoken",
+  "version": "1.0.0",
+  "description": "the cctoken project",
+  "main": "truffle.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cctoken/cctoken.git"
+  },
+  "keywords": [
+    "cctoken",
+    "creditchain",
+    "blockchain",
+    "etherum"
+  ],
+  "author": "Cuttle",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cctoken/cctoken/issues"
+  },
+  "homepage": "https://github.com/cctoken/cctoken#readme",
+  "dependencies": {
+    "zeppelin-solidity": "^1.2.0"
+  }
+}
