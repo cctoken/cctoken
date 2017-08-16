@@ -128,10 +128,6 @@ contract CCToken is StandardToken,Ownable{
 		_;
 	}
          
-	modifier etherProceedsAccountOnly(){
-		assert(msg.sender == etherProceedsAccount);
-		_;
-	}
 	// modifier notFinalized(){
 	//	   assert(!isFinalized);
 	//	   _;
@@ -190,7 +186,7 @@ contract CCToken is StandardToken,Ownable{
 	function etherProceeds() external
 	 etherProceedsAccountOnly
 	{
-		if(!etherProceedsAccount.send(this.balance)) revert();
+		if(!msg.sender.send(this.balance)) revert();
 	}
 	
    /**
