@@ -4,14 +4,11 @@ import 'zeppelin-solidity/contracts/token/StandardToken.sol';
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 contract CCToken is StandardToken,Ownable{
-
+	//the base info of the token 
     string public constant name = "CCToken";
     string public constant symbol ="CCT";
     string public constant version = "1.0";
     uint256 public constant decimals = 18;
-
-
-
 
     uint256 public constant MAX_SUPPLY = 1000000000 * 10**decimals;
     uint256 public constant quota = MAX_SUPPLY/100;
@@ -26,9 +23,6 @@ contract CCToken is StandardToken,Ownable{
     uint256 public constant teamKeepingQuota = quota*teamKeepingPercentage;
     uint256 public constant communityContributionQuota = quota*communityContributionPercentage;
 
-
-
-
     //the cap of diff offering channel
     //this percentage must less the the allOfferingPercentage
     uint256 public constant privateOfferingPercentage = 10;
@@ -40,6 +34,7 @@ contract CCToken is StandardToken,Ownable{
     uint256 public constant publicOfferingExchangeRate = 15000;
     uint256 public constant privateOfferingExchangeRate = 45000;
     
+	
     uint256 public btcEthSupply;
     uint256 public privateOfferingSupply;
     uint256 public allOfferingSupply;
@@ -52,7 +47,6 @@ contract CCToken is StandardToken,Ownable{
     address public teamWithdrawAccount;
     address public communityContributionAccount;
     
-
     uint256 public fundingStartBlock;
     uint256 public fundingEndBlock;
     uint256 public teamKeepingLockEndBlock;
@@ -82,7 +76,6 @@ contract CCToken is StandardToken,Ownable{
         // isFinalized=false;
     }
 
-
     modifier beforeFundingStartBlock(){
         assert(block.number <= fundingStartBlock);
         _;
@@ -91,8 +84,6 @@ contract CCToken is StandardToken,Ownable{
         assert(block.number >= fundingEndBlock);
         _;
     }
-
-
     modifier notBeforeFundingStartBlock(){
         assert(block.number > fundingStartBlock);
         _;
@@ -101,14 +92,10 @@ contract CCToken is StandardToken,Ownable{
         assert(block.number < fundingEndBlock);
         _;
     }
-
     modifier notBeforeTeamKeepingLockEndBlock(){
         assert(block.number>teamKeepingLockEndBlock);
         _;
     }
-
-
-
 
     modifier totalSupplyNotReached(uint256 _ethContribution,uint rate){
         assert(SafeMath.add(totalSupply,SafeMath.mul(_ethContribution,rate)) <= MAX_SUPPLY);
@@ -118,27 +105,20 @@ contract CCToken is StandardToken,Ownable{
         assert(SafeMath.add(allOfferingSupply,SafeMath.mul(_ethContribution,rate)) <= allOfferingQuota);
         _;
     }    
-
     modifier btcEthCapNotReached(uint256 _ethContribution){
         assert(SafeMath.add(btcEthSupply,SafeMath.mul(_ethContribution,publicOfferingExchangeRate)) <= btcChannelCap);
         _;
     }
-
     modifier privateOfferingCapNotReached(uint256 _ethContribution){
         assert(SafeMath.add(privateOfferingSupply,SafeMath.mul(_ethContribution,privateOfferingExchangeRate)) <= privateOfferingCap);
         _;
     }    
     
-    
-    
-    
-
     // ensures that the sender is bitcoin suisse
     modifier btcEthFundingAccountOnly() {
         assert(msg.sender == btcEthFundingAccount);
         _;
     }
-
     modifier etherProceedsAccountOnly(){
         assert(msg.sender == etherProceedsAccount);
         _;
@@ -147,7 +127,6 @@ contract CCToken is StandardToken,Ownable{
         assert(msg.sender == privateEthFundingAccount);
         _;
     }
-
 
     // modifier notFinalized(){
     //     assert(!isFinalized);
@@ -167,22 +146,19 @@ contract CCToken is StandardToken,Ownable{
      btcEthFundingAccountOnly
      btcEthCapNotReached(msg.value)
     {
-        
-        uint256 tokenAmount = SafeMath.mul(msg.value,publicOfferingExchangeRate);
-        btcEthSupply=SafeMath.add(btcEthSupply,tokenAmount);
-        
-        processFunding(publicOfferingExchangeRate);
+		uint256 tokenAmount = SafeMath.mul(msg.value,publicOfferingExchangeRate);
+		btcEthSupply=SafeMath.add(btcEthSupply,tokenAmount);
+		processFunding(publicOfferingExchangeRate);
     }  
-    
     
     function processPrivateFunding() payable external
      beforeFundingStartBlock
      privateEthFundingAccountOnly
      privateOfferingCapNotReached(msg.value)
     {
-        uint256 tokenAmount = SafeMath.mul(msg.value,privateOfferingExchangeRate);
-        privateOfferingSupply=SafeMath.add(privateOfferingSupply,tokenAmount);
-        processFunding(privateOfferingExchangeRate);
+		uint256 tokenAmount = SafeMath.mul(msg.value,privateOfferingExchangeRate);
+		privateOfferingSupply=SafeMath.add(privateOfferingSupply,tokenAmount);
+		processFunding(privateOfferingExchangeRate);
     }  
     
     
@@ -190,13 +166,11 @@ contract CCToken is StandardToken,Ownable{
      onlyOwner
      notBeforeTeamKeepingLockEndBlock
     {
-        assert(SafeMath.add(teamWithdrawSupply,tokenAmount)<=teamKeepingQuota);
-        assert(SafeMath.add(totalSupply,tokenAmount)<=MAX_SUPPLY);
-        
-        teamWithdrawSupply=SafeMath.add(teamWithdrawSupply,tokenAmount);
-        totalSupply=SafeMath.add(totalSupply,tokenAmount);
-        
-        balances[teamWithdrawAccount] += tokenAmount; 
+		assert(SafeMath.add(teamWithdrawSupply,tokenAmount)<=teamKeepingQuota);
+		assert(SafeMath.add(totalSupply,tokenAmount)<=MAX_SUPPLY);
+		teamWithdrawSupply=SafeMath.add(teamWithdrawSupply,tokenAmount);
+		totalSupply=SafeMath.add(totalSupply,tokenAmount);
+		balances[teamWithdrawAccount] += tokenAmount; 
     }
 
     function communityContributionWithdraw(uint256 tokenAmount) external
@@ -204,15 +178,10 @@ contract CCToken is StandardToken,Ownable{
     {
         assert(SafeMath.add(communityContributionSupply,tokenAmount)<=communityContributionQuota);
         assert(SafeMath.add(totalSupply,tokenAmount)<=MAX_SUPPLY);
-        
         communityContributionSupply=SafeMath.add(communityContributionSupply,tokenAmount);
         totalSupply=SafeMath.add(totalSupply,tokenAmount);
-        
         balances[communityContributionAccount] += tokenAmount; 
     }
-
-  
-
 
     function etherProceeds() external
      onlyOwner
@@ -229,10 +198,8 @@ contract CCToken is StandardToken,Ownable{
         allOfferingNotReached(msg.value,fundingRate)
     {
         uint256 tokenAmount = SafeMath.mul(msg.value,fundingRate);
-        
         totalSupply=SafeMath.add(totalSupply,tokenAmount);
         allOfferingSupply=SafeMath.add(allOfferingSupply,tokenAmount);
-        
         balances[msg.sender] += tokenAmount;  // safeAdd not needed; bad semantics to use here
         CreateCCT(msg.sender, tokenAmount);  // logs token creation
     }
