@@ -72,28 +72,29 @@ contract CCToken is StandardToken,Ownable{
 		allOfferingSupply=0;
 		communityContributionSupply=0;
 		teamWithdrawSupply=0;
-		
+
 		// isFinalized=false;
 	}
 
+
 	modifier beforeFundingStartBlock(){
-		assert(block.number <= fundingStartBlock);
+		assert(getCurrentBlockNum() <= fundingStartBlock);
 		_;
 	}
 	modifier afterFundingEndBlock(){
-		assert(block.number >= fundingEndBlock);
+		assert(getCurrentBlockNum() >= fundingEndBlock);
 		_;
 	}
 	modifier notBeforeFundingStartBlock(){
-		assert(block.number > fundingStartBlock);
+		assert(getCurrentBlockNum() > fundingStartBlock);
 		_;
 	}
 	modifier notAfterFundingEndBlock(){
-		assert(block.number < fundingEndBlock);
+		assert(getCurrentBlockNum() < fundingEndBlock);
 		_;
 	}
 	modifier notBeforeTeamKeepingLockEndBlock(){
-		assert(block.number>teamKeepingLockEndBlock);
+		assert(getCurrentBlockNum() > teamKeepingLockEndBlock);
 		_;
 	}
 
@@ -132,7 +133,9 @@ contract CCToken is StandardToken,Ownable{
 	//	   assert(!isFinalized);
 	//	   _;
 	// }
-
+    function getCurrentBlockNum()  internal returns (uint256){
+        return block.number;
+    }
 	function processEthPulicFunding() payable external
 	 notBeforeFundingStartBlock
 	 notAfterFundingEndBlock

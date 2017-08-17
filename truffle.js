@@ -1,3 +1,10 @@
+require('babel-register');
+require('babel-polyfill');
+
+var provider;
+var HDWalletProvider=require('truffle-hdwallet-provider');
+var mnemonic='[REDACTED]';
+
 module.exports = {
   networks: {
     development: {
