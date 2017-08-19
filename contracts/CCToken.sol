@@ -181,6 +181,9 @@ contract CCToken is StandardToken,Ownable{
 		CreateCCT(getCommunityContributionAccount(), tokenAmount);
 	}
 
+   /**
+		@dev get the funded ether
+	*/
 	function etherProceeds() external
 	 etherProceedsAccountOnly
 	{
@@ -194,6 +197,7 @@ contract CCToken is StandardToken,Ownable{
 	function processFunding(uint256 fundingRate) internal
 		totalSupplyNotReached(msg.value,fundingRate)
 		allOfferingNotReached(msg.value,fundingRate)
+		limitFundingEthCheck
 
 	{
 		uint256 tokenAmount = msg.value.mul(fundingRate);
@@ -202,19 +206,19 @@ contract CCToken is StandardToken,Ownable{
 		balances[msg.sender] += tokenAmount;  // safeAdd not needed; bad semantics to use here
 		CreateCCT(msg.sender, tokenAmount);	 // logs token creation
 	}
-	// modifier notFinalized(){
-	//	   assert(!isFinalized);
-	//	   _;
-	// }
+
 	function getCurrentBlockNum()  internal returns (uint256){
 		return block.number;
 	}
+
 	function getEtherProceedsAccount() internal  returns (address){
 		return etherProceedsAccount;
 	}
+
 	function getBtcEthFundingAccount() internal  returns (address){
 		return btcEthFundingAccount;
 	}
+
 	function getPrivateEthFundingAccount() internal  returns (address){
 		return privateEthFundingAccount;
 	}
@@ -222,6 +226,7 @@ contract CCToken is StandardToken,Ownable{
 	function getTeamWithdrawAccount() internal returns (address){
 		return teamWithdrawAccount;
 	}
+
 	function getCommunityContributionAccount() internal  returns (address){
 		return communityContributionAccount;
 	}
