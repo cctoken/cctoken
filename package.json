@@ -4,10 +4,10 @@
   "description": "the cctoken project",
   "main": "truffle.js",
   "directories": {
-    "test": "test"
+    "test": "scripts/test.sh"
   },
   "scripts": {
-    "test": "test/test.js"
+    "test": "scripts/test.sh"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "babel-register": "^6.26.0",
+    "chai-bignumber": "^2.0.1",
     "zeppelin-solidity": "^1.2.0"
   }
 }
