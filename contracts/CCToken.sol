@@ -34,17 +34,17 @@ contract CCToken is StandardToken,Ownable{
 	uint256 public constant publicOfferingExchangeRate = 15000;
 	uint256 public constant privateOfferingExchangeRate = 45000;
 	
-    //need to edit
+	//need to edit
 	address public constant etherProceedsAccount = 0x026aa9b30d4228f3d1491adbf2a1940e52601779;
-    address public constant btcEthFundingAccount= 0xa678972fb6d53eb0cd2471c99fef9e09f5e18317;
-    address public constant privateEthFundingAccount= 0xa07c00d8fc297f4a9607b35cc02ab00008fac963;
-    address public constant teamWithdrawAccount= 0xcf69118925edeff49e8c208a6abe02c3fd64007b;
-    address public constant communityContributionAccount= 0x653a67847901eb6548f2b09540fbbc5735433f35;
+	address public constant btcEthFundingAccount= 0xa678972fb6d53eb0cd2471c99fef9e09f5e18317;
+	address public constant privateEthFundingAccount= 0xa07c00d8fc297f4a9607b35cc02ab00008fac963;
+	address public constant teamWithdrawAccount= 0xcf69118925edeff49e8c208a6abe02c3fd64007b;
+	address public constant communityContributionAccount= 0x653a67847901eb6548f2b09540fbbc5735433f35;
 
-    //dependency on the start day
-    uint256 public constant fundingStartBlock=4000000;
-    uint256 public constant fundingEndBlock =fundingStartBlock+100800;
-    uint256 public constant teamKeepingLockEndBlock = fundingEndBlock + 31536000;
+	//dependency on the start day
+	uint256 public constant fundingStartBlock=4000000;
+	uint256 public constant fundingEndBlock =fundingStartBlock+100800;
+	uint256 public constant teamKeepingLockEndBlock = fundingEndBlock + 31536000;
 
 
 	uint256 public btcEthSupply;
@@ -124,10 +124,10 @@ contract CCToken is StandardToken,Ownable{
 		assert(msg.sender == getPrivateEthFundingAccount());
 		_;
 	}
-    modifier limitFundingEthCheck(){
-        assert(msg.value>=limitFundingEth);
-        _;
-    }
+	modifier limitFundingEthCheck(){
+		assert(msg.value>=limitFundingEth);
+		_;
+	}
 
 	function processEthPulicFunding() payable external
 	 notBeforeFundingStartBlock
@@ -194,7 +194,7 @@ contract CCToken is StandardToken,Ownable{
 	function processFunding(uint256 fundingRate) internal
 		totalSupplyNotReached(msg.value,fundingRate)
 		allOfferingNotReached(msg.value,fundingRate)
-		limitFundingEthCheck
+
 	{
 		uint256 tokenAmount = msg.value.mul(fundingRate);
 		totalSupply=totalSupply.add(tokenAmount);
@@ -206,24 +206,24 @@ contract CCToken is StandardToken,Ownable{
 	//	   assert(!isFinalized);
 	//	   _;
 	// }
-    function getCurrentBlockNum()  internal returns (uint256){
-        return block.number;
-    }
-    function getEtherProceedsAccount() internal  returns (address){
-        return etherProceedsAccount;
-    }
-    function getBtcEthFundingAccount() internal  returns (address){
-        return btcEthFundingAccount;
-    }
-    function getPrivateEthFundingAccount() internal  returns (address){
-            return privateEthFundingAccount;
-    }
+	function getCurrentBlockNum()  internal returns (uint256){
+		return block.number;
+	}
+	function getEtherProceedsAccount() internal  returns (address){
+		return etherProceedsAccount;
+	}
+	function getBtcEthFundingAccount() internal  returns (address){
+		return btcEthFundingAccount;
+	}
+	function getPrivateEthFundingAccount() internal  returns (address){
+		return privateEthFundingAccount;
+	}
 
-    function getTeamWithdrawAccount() internal returns (address){
-            return teamWithdrawAccount;
-    }
-    function getCommunityContributionAccount() internal  returns (address){
-            return communityContributionAccount;
-    }
+	function getTeamWithdrawAccount() internal returns (address){
+		return teamWithdrawAccount;
+	}
+	function getCommunityContributionAccount() internal  returns (address){
+		return communityContributionAccount;
+	}
 
 }
