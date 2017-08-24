@@ -15,8 +15,7 @@ contract CDToken is PausableToken {
 	uint256 public constant MAX_ORG_SUPPLY = (MAX_CCT_SUPPLY/100)*10;
 	//uint256 public constant MAX_PER_SUPPLY = (MAX_CCT_SUPPLY/100)*5;
 
-	uint256 public constant limitFundingEth = 1*10**decimals;
-
+	uint256 public limitFundingEth;
 
 	//diff rate of the diff offering channel
 	uint256 public constant orgPrivateOfferingExchangeRate = 5300;
@@ -42,7 +41,7 @@ contract CDToken is PausableToken {
 		totalSupply = 0 ;
 		orgPrivateOfferingSupply = 0 ;
 		perPrivateOfferingSupply=0;
-
+        limitFundingEth = 1*10**decimals;
 		isOrgFinish=false;
 	}
 
@@ -64,11 +63,6 @@ contract CDToken is PausableToken {
 		assert(orgPrivateOfferingSupply.add(_ethContribution.mul(orgPrivateOfferingExchangeRate)) <= MAX_ORG_SUPPLY);
 		_;
 	}
-
-//	modifier perPrivateOfferingNotReached(uint256 _ethContribution){
-//		assert(perPrivateOfferingSupply.add(_ethContribution.mul(perPrivateOfferingExchangeRate)) <= MAX_PER_SUPPLY);
-//		_;
-//	}
 
 	modifier etherProceedsAccountOnly(){
 		assert(msg.sender == getEtherProceedsAccount());
@@ -109,7 +103,6 @@ contract CDToken is PausableToken {
 		processFunding(orgPrivateOfferingExchangeRate);
 	}
 
-
    /**
 		@dev handles Funding logic
 		note that the Funding event is triggered using the sender as the funding, regardless of the actual funding
@@ -125,8 +118,6 @@ contract CDToken is PausableToken {
 		CreateCDT(msg.sender, tokenAmount);	 // logs token creation
 	}
 
-
-
 	function getEtherProceedsAccount() internal  returns (address){
 		return etherProceedsAccount;
 	}
@@ -140,4 +131,10 @@ contract CDToken is PausableToken {
 	{
 		isOrgFinish=_isOrgFinish;
 	}
+	function setLimitFundingEth(uint256 _limitFundingEth) external
+	    onlyOwner
+	{
+	    limitFundingEth=_limitFundingEth;
+	}
+
 }

@@ -1,5 +1,5 @@
-var CDToken = artifacts.require("./CDToken.sol");
+var CCToken = artifacts.require("./CDToken.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(CDToken);
+  deployer.deploy(CCToken);
 };
