@@ -1,0 +1,247 @@
+pragma solidity ^0.4.13;
+
+import 'zeppelin-solidity/contracts/token/StandardToken.sol';
+import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
+contract CRCToken is StandardToken,Ownable{
+	//the base info of the token 
+	string public name;
+	string public symbol;
+	string public constant version = "1.0";
+	uint256 public constant decimals = 18;
+
+	uint256 public constant MAX_SUPPLY = 100000000 * 10**decimals;
+	uint256 public constant quota = MAX_SUPPLY/100;
+
+	//the percentage of all usages
+	uint256 public constant allOfferingPercentage = 50;
+	uint256 public constant teamKeepingPercentage = 15;
+	uint256 public constant communityContributionPercentage = 35;
+
+	//the quota of all usages
+	uint256 public constant allOfferingQuota = quota*allOfferingPercentage;
+	uint256 public constant teamKeepingQuota = quota*teamKeepingPercentage;
+	uint256 public constant communityContributionQuota = quota*communityContributionPercentage;
+
+	//the cap of diff offering channel
+	//this percentage must less the the allOfferingPercentage
+	uint256 public constant privateOfferingPercentage = 10;
+	uint256 public constant privateOfferingCap = quota*privateOfferingPercentage;
+
+	//diff rate of the diff offering channel
+	uint256 public constant publicOfferingExchangeRate = 5000;
+	uint256 public constant privateOfferingExchangeRate = 10000;
+
+	//need to edit
+	address public etherProceedsAccount;
+	address public crcWithdrawAccount;
+
+	//dependency on the start day
+	uint256 public fundingStartBlock;
+	uint256 public fundingEndBlock;
+	uint256 public teamKeepingLockEndBlock ;
+
+
+	uint256 public privateOfferingSupply;
+	uint256 public allOfferingSupply;
+	uint256 public teamWithdrawSupply;
+	uint256 public communityContributionSupply;
+
+
+
+	// bool public isFinalized;// switched to true in operational state
+
+	event CreateCRC(address indexed _to, uint256 _value);
+
+	// uint256 public
+
+	function CRCToken(){
+		name = "CRCToken";
+		symbol ="CRC";
+
+		etherProceedsAccount = 0x026aa9b30d4228f3d1491adbf2a1940e52601779;
+		crcWithdrawAccount = 0x653a67847901eb6548f2b09540fbbc5735433f35;
+
+		fundingStartBlock=4000000;
+		fundingEndBlock=fundingStartBlock+100800;
+		teamKeepingLockEndBlock=fundingEndBlock + 31536000;
+
+
+		totalSupply = 0 ;
+		privateOfferingSupply=0;
+		allOfferingSupply=0;
+		teamWithdrawSupply=0;
+		communityContributionSupply=0;
+	}
+
+
+	modifier beforeFundingStartBlock(){
+		assert(getCurrentBlockNum() < fundingStartBlock);
+		_;
+	}
+
+	modifier notBeforeFundingStartBlock(){
+		assert(getCurrentBlockNum() >= fundingStartBlock);
+		_;
+	}
+	modifier notAfterFundingEndBlock(){
+		assert(getCurrentBlockNum() < fundingEndBlock);
+		_;
+	}
+	modifier notBeforeTeamKeepingLockEndBlock(){
+		assert(getCurrentBlockNum() >= teamKeepingLockEndBlock);
+		_;
+	}
+
+	modifier totalSupplyNotReached(uint256 _ethContribution,uint rate){
+		assert(totalSupply.add(_ethContribution.mul(rate)) <= MAX_SUPPLY);
+		_;
+	}
+	modifier allOfferingNotReached(uint256 _ethContribution,uint rate){
+		assert(allOfferingSupply.add(_ethContribution.mul(rate)) <= allOfferingQuota);
+		_;
+	}	 
+
+	modifier privateOfferingCapNotReached(uint256 _ethContribution){
+		assert(privateOfferingSupply.add(_ethContribution.mul(privateOfferingExchangeRate)) <= privateOfferingCap);
+		_;
+	}	 
+	
+
+	modifier etherProceedsAccountOnly(){
+		assert(msg.sender == getEtherProceedsAccount());
+		_;
+	}
+	modifier crcWithdrawAccountOnly(){
+		assert(msg.sender == getCrcWithdrawAccount());
+		_;
+	}
+
+
+
+
+	function processFunding(address receiver,uint256 _value,uint256 fundingRate) internal
+		totalSupplyNotReached(_value,fundingRate)
+		allOfferingNotReached(_value,fundingRate)
+
+	{
+		uint256 tokenAmount = _value.mul(fundingRate);
+		totalSupply=totalSupply.add(tokenAmount);
+		allOfferingSupply=allOfferingSupply.add(tokenAmount);
+		balances[receiver] += tokenAmount;  // safeAdd not needed; bad semantics to use here
+		CreateCRC(receiver, tokenAmount);	 // logs token creation
+	}
+
+
+	function () payable external{
+		if(getCurrentBlockNum()<=fundingStartBlock){
+			processPrivateFunding(msg.sender);
+		}else{
+			processEthPulicFunding(msg.sender);
+		}
+
+
+	}
+
+	function processEthPulicFunding(address receiver) internal
+	 notBeforeFundingStartBlock
+	 notAfterFundingEndBlock
+	{
+		processFunding(receiver,msg.value,publicOfferingExchangeRate);
+	}
+	
+
+	function processPrivateFunding(address receiver) internal
+	 beforeFundingStartBlock
+	 privateOfferingCapNotReached(msg.value)
+	{
+		uint256 tokenAmount = msg.value.mul(privateOfferingExchangeRate);
+		privateOfferingSupply=privateOfferingSupply.add(tokenAmount);
+		processFunding(receiver,msg.value,privateOfferingExchangeRate);
+	}  
+
+	function icoPlatformWithdraw(uint256 _value) external
+		crcWithdrawAccountOnly
+	{
+		processFunding(msg.sender,_value,publicOfferingExchangeRate);
+	}
+
+	function teamKeepingWithdraw(uint256 tokenAmount) external
+	   crcWithdrawAccountOnly
+	   notBeforeTeamKeepingLockEndBlock
+	{
+		assert(teamWithdrawSupply.add(tokenAmount)<=teamKeepingQuota);
+		assert(totalSupply.add(tokenAmount)<=MAX_SUPPLY);
+		teamWithdrawSupply=teamWithdrawSupply.add(tokenAmount);
+		totalSupply=totalSupply.add(tokenAmount);
+		balances[msg.sender]+=tokenAmount;
+		CreateCRC(msg.sender, tokenAmount);
+	}
+
+	function communityContributionWithdraw(uint256 tokenAmount) external
+	    crcWithdrawAccountOnly
+	{
+		assert(communityContributionSupply.add(tokenAmount)<=communityContributionQuota);
+		assert(totalSupply.add(tokenAmount)<=MAX_SUPPLY);
+		communityContributionSupply=communityContributionSupply.add(tokenAmount);
+		totalSupply=totalSupply.add(tokenAmount);
+		balances[msg.sender] += tokenAmount;
+		CreateCRC(msg.sender, tokenAmount);
+	}
+
+	function etherProceeds() external
+		etherProceedsAccountOnly
+	{
+		if(!msg.sender.send(this.balance)) revert();
+	}
+	
+
+
+
+	function getCurrentBlockNum()  internal returns (uint256){
+		return block.number;
+	}
+
+	function getEtherProceedsAccount() internal  returns (address){
+		return etherProceedsAccount;
+	}
+
+
+	function getCrcWithdrawAccount() internal returns (address){
+		return crcWithdrawAccount;
+	}
+
+	function setName(string _name) external
+		onlyOwner
+	{
+		name=_name;
+	}
+
+	function setSymbol(string _symbol) external
+		onlyOwner
+	{
+		symbol=_symbol;
+	}
+
+
+	function setEtherProceedsAccount(address _etherProceedsAccount) external
+		onlyOwner
+	{
+		etherProceedsAccount=_etherProceedsAccount;
+	}
+
+	function setCrcWithdrawAccount(address _crcWithdrawAccount) external
+		onlyOwner
+	{
+		crcWithdrawAccount=_crcWithdrawAccount;
+	}
+
+	function setFundingStartBlock(uint256 _fundingStartBlock) external
+		onlyOwner
+	{
+		fundingStartBlock=_fundingStartBlock;
+		fundingEndBlock=fundingStartBlock+100800;
+		//can change this ?
+		teamKeepingLockEndBlock=fundingEndBlock + 31536000;
+	}
+
+}
