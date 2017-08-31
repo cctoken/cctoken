@@ -58,8 +58,8 @@ contract CRCToken is StandardToken,Ownable{
 		name = "CRCToken";
 		symbol ="CRC";
 
-		etherProceedsAccount = 0x026aa9b30d4228f3d1491adbf2a1940e52601779;
-		crcWithdrawAccount = 0x653a67847901eb6548f2b09540fbbc5735433f35;
+		etherProceedsAccount = 0x5390f9D18A7131aC9C532C1dcD1bEAb3e8A44cbF;
+		crcWithdrawAccount = 0xb353425bA4FE2670DaC1230da934498252E692bD;
 
 		fundingStartBlock=4000000;
 		fundingEndBlock=fundingStartBlock+100800;
