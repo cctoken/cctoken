@@ -36,7 +36,7 @@ function ether_towei_rate(value){
 
 contract('CRCToken', function (accounts) {
         it("构建合约-期望成功，应该有正确的版本号和名称信息",async function () {
-            let cct= await setup_cctoken(accounts);
+            let cct= await setup_crctoken(accounts);
             await cct.setEtherProceedsAccount(accounts[8],{from:accounts[0]});
             await cct.setCrcWithdrawAccount(accounts[7],{from:accounts[0]});
 
@@ -66,7 +66,7 @@ contract('CRCToken', function (accounts) {
 
 
     it("构建合约-期望失败，非owner无法修改基本信息",async function () {
-        let cct= await setup_cctoken(accounts);
+        let cct= await setup_crctoken(accounts);
         try {
             await cct.setEtherProceedsAccount(accounts[8],{from:accounts[2]});
             //因为期望抛异常，故不会进入这里，若进入，则单元测试失败
@@ -121,14 +121,11 @@ contract('CRCToken', function (accounts) {
         assert.equal(accounts[1],crcWithdrawAccount);
     });
 
-
-
-
     it("私募-期望成功，因为还没到最早开始区块",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.setCurrentBlockNum(fundingStartBlock-1);
 
-        await web3.eth.sendTransaction({from:accounts[5],to:cct.address(),value:1000000000000000000});
+        await cct.sendTransaction({from:accounts[5],value:100000000000000000000});
 
         let balance = await cct.balanceOf(accounts[5]);
         let totalSupply=await cct.totalSupply();
@@ -141,7 +138,7 @@ contract('CRCToken', function (accounts) {
     });
 
     it("公开募集-期望失败，因为已经过了最后众筹区块",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.setCurrentBlockNum(fundingEndBlock+1);
 
         try {
@@ -162,7 +159,7 @@ contract('CRCToken', function (accounts) {
 
 
     it("公开募集-期望成功，因为在期望区块范围内",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.setCurrentBlockNum(fundingStartBlock+1);
         await web3.eth.sendTransaction({from:accounts[5],to:cct.address(),value:1000000000000000000});
         await web3.eth.sendTransaction({from:accounts[5],to:cct.address(),value:2000000000000000000});
@@ -181,7 +178,7 @@ contract('CRCToken', function (accounts) {
     });
 
     it("公开募集-期望成功，未超过allOffering数额",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.setCurrentBlockNum(fundingStartBlock+1);
         await web3.eth.sendTransaction({from:accounts[5],to:cct.address(),value:10000000000000000000000});
         let balance = await cct.balanceOf(accounts[5]);
@@ -193,7 +190,7 @@ contract('CRCToken', function (accounts) {
     });
 
     it("公开募集-期望失败，超过allOffering数额",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.setCurrentBlockNum(fundingStartBlock+1);
         await web3.eth.sendTransaction({from:accounts[5],to:cct.address(),value:10000000000000000000000});
         try{
@@ -213,7 +210,7 @@ contract('CRCToken', function (accounts) {
 
 
     it("公开募集-期望失败，超过allOffering数额",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.setCurrentBlockNum(fundingStartBlock+1);
         try{
             await web3.eth.sendTransaction({from:accounts[5],to:cct.address(),value:11000000000000000000000});
@@ -234,7 +231,7 @@ contract('CRCToken', function (accounts) {
 
 
     it("团队提现-期望失败，因为还没到过锁定期",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.setCurrentBlockNum(teamKeepingLockEndBlock-1);
 
         try {
@@ -257,7 +254,7 @@ contract('CRCToken', function (accounts) {
     });
 
     it("团队提现-期望失败，因为非专用账户操作",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.setCurrentBlockNum(teamKeepingLockEndBlock+1);
 
         try {
@@ -280,7 +277,7 @@ contract('CRCToken', function (accounts) {
     });
 
     it("团队提现-期望失败，超过提现额度",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.setCurrentBlockNum(teamKeepingLockEndBlock+1);
         await cct.teamKeepingWithdraw(ether_towei_rate(15000000),{from:accounts[1],value:0});
         try {
@@ -300,7 +297,7 @@ contract('CRCToken', function (accounts) {
 
 
     it("团队提现-期望成功",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.setCurrentBlockNum(teamKeepingLockEndBlock+1);
         await cct.teamKeepingWithdraw(ether_towei_rate(15000000),{from:accounts[1],value:0});
         let balance = await cct.balanceOf(accounts[1]);
@@ -312,7 +309,7 @@ contract('CRCToken', function (accounts) {
     });
 
     it("团队提现-期望成功但额度不变，因为提取值为0",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.setCurrentBlockNum(teamKeepingLockEndBlock+1);
         await cct.teamKeepingWithdraw(ether_towei_rate(0),{from:accounts[1],value:0});
         let balance = await cct.balanceOf(accounts[1]);
@@ -325,7 +322,7 @@ contract('CRCToken', function (accounts) {
 
 
     it("社区提现-期望失败，因为非专用账户操作",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         try {
             await cct.communityContributionWithdraw(100,{from:accounts[8],value:0});
             //因为期望抛异常，故不会进入这里，若进入，则单元测试失败
@@ -345,7 +342,7 @@ contract('CRCToken', function (accounts) {
 
 
     it("社区提现-期望失败，超过提现额度",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.communityContributionWithdraw(ether_towei_rate(35000000),{from:accounts[1],value:0});
         try {
             await cct.communityContributionWithdraw(ether_towei_rate(1),{from:accounts[1],value:0});
@@ -364,7 +361,7 @@ contract('CRCToken', function (accounts) {
 
 
     it("社区提现-期望成功",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.communityContributionWithdraw(ether_towei_rate(35000000),{from:accounts[1],value:0});
         let balance = await cct.balanceOf(accounts[1]);
         let totalSupply=await cct.totalSupply();
@@ -375,7 +372,7 @@ contract('CRCToken', function (accounts) {
     });
 
     it("社区提现-期望成功,但额度不变,因为提取值为0",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.communityContributionWithdraw(ether_towei_rate(0),{from:accounts[1],value:0});
         let balance = await cct.balanceOf(accounts[1]);
         let totalSupply=await cct.totalSupply();
@@ -386,7 +383,7 @@ contract('CRCToken', function (accounts) {
     });
 
     it("平台提现-期望失败，因为非专用账户操作",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         try {
             await cct.icoPlatformWithdraw(100,{from:accounts[8],value:0});
             //因为期望抛异常，故不会进入这里，若进入，则单元测试失败
@@ -405,7 +402,7 @@ contract('CRCToken', function (accounts) {
 
 
     it("平台提现-期望失败，超过提现额度",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.icoPlatformWithdraw(ether_towei_rate(50000000),{from:accounts[1],value:0});
         try {
             await cct.icoPlatformWithdraw(ether_towei_rate(1),{from:accounts[1],value:0});
@@ -425,7 +422,7 @@ contract('CRCToken', function (accounts) {
     });
 
     it("平台提现-期望成功",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.icoPlatformWithdraw(ether_towei_rate(50000000),{from:accounts[1],value:0});
         let balance = await cct.balanceOf(accounts[1]);
         let totalSupply=await cct.totalSupply();
@@ -437,7 +434,7 @@ contract('CRCToken', function (accounts) {
     });
 
     it("平台提现-期望成功,但额度不变,因为提取值为0",async function(){
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.icoPlatformWithdraw(ether_towei_rate(0),{from:accounts[1],value:0});
         let balance = await cct.balanceOf(accounts[1]);
         let totalSupply=await cct.totalSupply();
@@ -449,7 +446,7 @@ contract('CRCToken', function (accounts) {
     });
 
     it("提取eth-期望失败，非eth管理账户操作", async function () {
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.setCurrentBlockNum(fundingStartBlock + 1);
         await web3.eth.sendTransaction({from:accounts[8],to:cct.address(),value:10000000000000000000000});
         try {
@@ -465,7 +462,7 @@ contract('CRCToken', function (accounts) {
 
 
     it("提取eth-期望成功", async function () {
-        let cct = await setup_cctoken(accounts);
+        let cct = await setup_crctoken(accounts);
         await cct.setCurrentBlockNum(fundingStartBlock + 1);
         await web3.eth.sendTransaction({from:accounts[8],to:cct.address(),value:10000000000000000000000});
         let contractBalance1 = await web3.eth.getBalance(cct.address);
