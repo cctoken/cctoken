@@ -162,7 +162,7 @@ contract CRCToken is StandardToken,Ownable{
 	function icoPlatformWithdraw(uint256 _value) external
 		crcWithdrawAccountOnly
 	{
-		processFunding(msg.sender,_value,publicOfferingExchangeRate);
+		processFunding(msg.sender,_value,1);
 	}
 
 	function teamKeepingWithdraw(uint256 tokenAmount) external
