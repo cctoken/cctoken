@@ -40,7 +40,6 @@ contract CRCToken is StandardToken,Ownable{
 	uint256 public fundingEndBlock;
 	uint256 public teamKeepingLockEndBlock ;
 
-
 	uint256 public privateOfferingSupply;
 	uint256 public allOfferingSupply;
 	uint256 public teamWithdrawSupply;
@@ -61,10 +60,9 @@ contract CRCToken is StandardToken,Ownable{
 		etherProceedsAccount = 0x5390f9D18A7131aC9C532C1dcD1bEAb3e8A44cbF;
 		crcWithdrawAccount = 0xb353425bA4FE2670DaC1230da934498252E692bD;
 
-		fundingStartBlock=4000000;
-		fundingEndBlock=fundingStartBlock+100800;
-		teamKeepingLockEndBlock=fundingEndBlock + 31536000;
-
+		fundingStartBlock=4263161;
+		fundingEndBlock=4313561;
+		teamKeepingLockEndBlock=5577161;
 
 		totalSupply = 0 ;
 		privateOfferingSupply=0;
@@ -235,13 +233,14 @@ contract CRCToken is StandardToken,Ownable{
 		crcWithdrawAccount=_crcWithdrawAccount;
 	}
 
-	function setFundingStartBlock(uint256 _fundingStartBlock) external
+	function setFundingBlock(uint256 _fundingStartBlock,uint256 _fundingEndBlock,uint256 _teamKeepingLockEndBlock) external
 		onlyOwner
 	{
+
 		fundingStartBlock=_fundingStartBlock;
-		fundingEndBlock=fundingStartBlock+100800;
-		//can change this ?
-		teamKeepingLockEndBlock=fundingEndBlock + 31536000;
+		fundingEndBlock = _fundingEndBlock;
+		teamKeepingLockEndBlock = _teamKeepingLockEndBlock;
 	}
+
 
 }

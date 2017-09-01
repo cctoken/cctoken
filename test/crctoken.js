@@ -7,16 +7,11 @@ var BigNumber = require("bignumber.js");
 var MAX_SUPPLY = 100000000000000000000000000;
 var quota = MAX_SUPPLY/100;
 var allOfferingQuota = quota*50;
-var teamKeepingQuota = quota*15;
-var communityContributionQuota = quota*35;
-var fundingStartBlock=5000000;
-var fundingEndBlock =fundingStartBlock+100800;
-var teamKeepingLockEndBlock = fundingEndBlock + 31536000;
-var privateOfferingPercentage = 10;
-var privateOfferingCap = quota*10;
 
-var publicOfferingExchangeRate = 5000;
-var privateOfferingExchangeRate = 10000;
+var fundingStartBlock=666;
+var fundingEndBlock =777;
+var teamKeepingLockEndBlock = 888;
+
 
 async function setup_crctoken(accounts) {
 
@@ -26,7 +21,7 @@ async function setup_crctoken(accounts) {
 
     await cct.setName("hehehehe",{from:accounts[0]});
     await cct.setSymbol("CRCMock",{from:accounts[0]});
-    await cct.setFundingStartBlock(fundingStartBlock,{from:accounts[0]});
+	await cct.setFundingBlock(fundingStartBlock,fundingEndBlock,teamKeepingLockEndBlock,{from:accounts[0]});
     return cct;
 }
 
@@ -42,15 +37,15 @@ contract('CRCToken', function (accounts) {
 
             await cct.setName("hehehehe2",{from:accounts[0]});
             await cct.setSymbol("CRCMock2",{from:accounts[0]});
-            await cct.setFundingStartBlock(999,{from:accounts[0]});
+            await cct.setFundingBlock(999,111,222,{from:accounts[0]});
 
 
             let name= await cct.name();
             let version=await cct.version();
             let symbol=await cct.symbol();
             let startBlock=await cct.fundingStartBlock();
-            let fundingEndBlock=await  cct.fundingEndBlock();
-            let teamKeepingLockEndBlock=await cct.teamKeepingLockEndBlock();
+            let endBlock=await  cct.fundingEndBlock();
+            let teamBlock=await cct.teamKeepingLockEndBlock();
             let etherProceedsAccount=await cct.etherProceedsAccount();
             let crcWithdrawAccount=await cct.crcWithdrawAccount();
 
@@ -58,8 +53,8 @@ contract('CRCToken', function (accounts) {
             assert.equal("1.0",version);
             assert.equal("CRCMock2",symbol);
             assert.equal(999,startBlock);
-            assert.equal(999+100800,fundingEndBlock);
-            assert.equal(999+100800+31536000,teamKeepingLockEndBlock);
+            assert.equal(111,endBlock);
+            assert.equal(222,teamBlock);
             assert.equal(accounts[8],etherProceedsAccount);
             assert.equal(accounts[7],crcWithdrawAccount);
 
@@ -112,7 +107,7 @@ contract('CRCToken', function (accounts) {
             assertJump(error);
         }
         try {
-            await cct.setFundingStartBlock(999,{from:accounts[2]});
+	        await cct.setFundingBlock(999,111,222,{from:accounts[2]});
             //因为期望抛异常，故不会进入这里，若进入，则单元测试失败
             assert(false);
         }catch (error){
@@ -122,8 +117,8 @@ contract('CRCToken', function (accounts) {
         let version=await cct.version();
         let symbol=await cct.symbol();
         let startBlock=await cct.fundingStartBlock();
-        let fundingEndBlock=await  cct.fundingEndBlock();
-        let teamKeepingLockEndBlock=await cct.teamKeepingLockEndBlock();
+        let endBlock=await  cct.fundingEndBlock();
+        let teamBlock=await cct.teamKeepingLockEndBlock();
         let etherProceedsAccount=await cct.etherProceedsAccount();
         let crcWithdrawAccount=await cct.crcWithdrawAccount();
 
@@ -131,8 +126,8 @@ contract('CRCToken', function (accounts) {
         assert.equal("1.0",version);
         assert.equal("CRCMock",symbol);
         assert.equal(fundingStartBlock,startBlock);
-        assert.equal(fundingStartBlock+100800,fundingEndBlock);
-        assert.equal(fundingStartBlock+100800+31536000,teamKeepingLockEndBlock);
+        assert.equal(fundingEndBlock,endBlock);
+        assert.equal(teamKeepingLockEndBlock,teamBlock);
         assert.equal(accounts[9],etherProceedsAccount);
         assert.equal(accounts[1],crcWithdrawAccount);
     });
