@@ -9,7 +9,7 @@ contract CRCToken is StandardToken,Ownable{
 	string public constant version = "1.0";
 	uint256 public constant decimals = 18;
 
-	uint256 public constant MAX_SUPPLY = 100000000 * 10**decimals;
+	uint256 public constant MAX_SUPPLY = 500000000 * 10**decimals;
 	uint256 public constant quota = MAX_SUPPLY/100;
 
 	//the percentage of all usages
@@ -28,8 +28,8 @@ contract CRCToken is StandardToken,Ownable{
 	uint256 public constant privateOfferingCap = quota*privateOfferingPercentage;
 
 	//diff rate of the diff offering channel
-	uint256 public constant publicOfferingExchangeRate = 5000;
-	uint256 public constant privateOfferingExchangeRate = 10000;
+	uint256 public constant publicOfferingExchangeRate = 25000;
+	uint256 public constant privateOfferingExchangeRate = 50000;
 
 	//need to edit
 	address public etherProceedsAccount;

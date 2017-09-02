@@ -1,4 +1,4 @@
-pragam solidity ^0.14.3;
+pragma solidity ^0.4.13;
 
 import 'zeppelin-solidity/contracts/token/StandardToken.sol';
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
@@ -41,7 +41,7 @@ contract XXToken is StandardToken,Ownable{
 		stepTwoStartBlock=4327161;
 		stepThreeStartBlock=4427161;
 		stepFourStartBlock=4527161;
-		endtBlock=5000000;
+		endBlock=5000000;
 
 	    oneSetpRate=4000;
 	    twoSetpRate=3000;
@@ -52,17 +52,17 @@ contract XXToken is StandardToken,Ownable{
 
 	event CreateXXT(address indexed _to, uint256 _value);
 
-	modifiler beforeBlock(uint256 _blockNum){
+	modifier beforeBlock(uint256 _blockNum){
 		assert(getCurrentBlockNum()<_blockNum);
 		_;
 	}
 
-	modifiler afterBlock(uint256 _blockNum){
+	modifier afterBlock(uint256 _blockNum){
 		assert(getCurrentBlockNum()>=_blockNum);
 		_;
 	}
 
-	modifiler notReachTotalSupply(uint256 _value,uint256 _rate){
+	modifier notReachTotalSupply(uint256 _value,uint256 _rate){
 		assert(MAX_SUPPLY>=totalSupply.add(_value.mul(_rate)));
 		_;
 	}

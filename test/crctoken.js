@@ -4,7 +4,7 @@ var CRCToken= artifacts.require("./helper/CRCTokenMock.sol");
 const assertJump=require('zeppelin-solidity/test/helpers/assertJump');
 var BigNumber = require("bignumber.js");
 
-var MAX_SUPPLY = 100000000000000000000000000;
+var MAX_SUPPLY = 500000000000000000000000000;
 var quota = MAX_SUPPLY/100;
 var allOfferingQuota = quota*50;
 
@@ -139,13 +139,13 @@ contract('CRCToken', function (accounts) {
         await cct.sendTransaction({from:accounts[5],value:1000000000000000000});
 
 		let balance = await cct.balanceOf(accounts[5]);
-        assert.equal(10000000000000000000000,balance.toNumber());
+        assert.equal(50000000000000000000000,balance.toNumber());
 		let totalSupply=await cct.totalSupply();
-        assert.equal(10000000000000000000000,totalSupply.toNumber());
+        assert.equal(50000000000000000000000,totalSupply.toNumber());
 		let allOfferingSupply =await  cct.allOfferingSupply();
-        assert.equal(10000000000000000000000,allOfferingSupply.toNumber());
+        assert.equal(50000000000000000000000,allOfferingSupply.toNumber());
 		let privateOfferingSupply =await cct.privateOfferingSupply();
-        assert.equal(10000000000000000000000,privateOfferingSupply.toNumber());
+        assert.equal(50000000000000000000000,privateOfferingSupply.toNumber());
 
 		let teamWithdrawSupply =await  cct.teamWithdrawSupply();
 		assert.equal(0,teamWithdrawSupply.toNumber());
@@ -173,10 +173,10 @@ contract('CRCToken', function (accounts) {
 		let totalSupply=await cct.totalSupply();
 		let allOfferingSupply =await  cct.allOfferingSupply();
 		let privateOfferingSupply =await cct.privateOfferingSupply();
-		assert.equal(10000000000000000000000000,balance.toNumber());
-		assert.equal(10000000000000000000000000,totalSupply.toNumber());
-		assert.equal(10000000000000000000000000,allOfferingSupply.toNumber());
-		assert.equal(10000000000000000000000000,privateOfferingSupply.toNumber());
+		assert.equal(50000000000000000000000000,balance.toNumber());
+		assert.equal(50000000000000000000000000,totalSupply.toNumber());
+		assert.equal(50000000000000000000000000,allOfferingSupply.toNumber());
+		assert.equal(50000000000000000000000000,privateOfferingSupply.toNumber());
 
 		let teamWithdrawSupply =await  cct.teamWithdrawSupply();
 		assert.equal(0,teamWithdrawSupply.toNumber());
@@ -257,11 +257,11 @@ contract('CRCToken', function (accounts) {
         let balance7 = await cct.balanceOf(accounts[7]);
         let totalSupply=await cct.totalSupply();
         let allOfferingSupply =await  cct.allOfferingSupply();
-        assert.equal(15000000000000000000000,balance5.toNumber());
-        assert.equal(10000000000000000000000,balance6.toNumber());
-        assert.equal(22500000000000000000000,balance7.toNumber());
-        assert.equal(47500000000000000000000,totalSupply.toNumber());
-        assert.equal(47500000000000000000000,allOfferingSupply.toNumber());
+        assert.equal(75000000000000000000000,balance5.toNumber());
+        assert.equal(50000000000000000000000,balance6.toNumber());
+        assert.equal(112500000000000000000000,balance7.toNumber());
+        assert.equal(237500000000000000000000,totalSupply.toNumber());
+        assert.equal(237500000000000000000000,allOfferingSupply.toNumber());
 
 		let teamWithdrawSupply =await  cct.teamWithdrawSupply();
 		assert.equal(0,teamWithdrawSupply.toNumber());
@@ -277,9 +277,9 @@ contract('CRCToken', function (accounts) {
         let balance = await cct.balanceOf(accounts[5]);
         let totalSupply=await cct.totalSupply();
         let allOfferingSupply =await  cct.allOfferingSupply();
-        assert.equal(allOfferingQuota,balance.toNumber());
-        assert.equal(allOfferingQuota,totalSupply.toNumber());
-        assert.equal(allOfferingQuota,allOfferingSupply.toNumber());
+        assert.equal(250000000000000000000000000,balance.toNumber());
+        assert.equal(250000000000000000000000000,totalSupply.toNumber());
+        assert.equal(250000000000000000000000000,allOfferingSupply.toNumber());
 
 		let teamWithdrawSupply =await  cct.teamWithdrawSupply();
 		assert.equal(0,teamWithdrawSupply.toNumber());
@@ -302,9 +302,9 @@ contract('CRCToken', function (accounts) {
         let balance = await cct.balanceOf(accounts[5]);
         let totalSupply=await cct.totalSupply();
         let allOfferingSupply =await  cct.allOfferingSupply();
-        assert.equal(allOfferingQuota,balance.toNumber());
-        assert.equal(allOfferingQuota,totalSupply.toNumber());
-        assert.equal(allOfferingQuota,allOfferingSupply.toNumber());
+        assert.equal(250000000000000000000000000,balance.toNumber());
+        assert.equal(250000000000000000000000000,totalSupply.toNumber());
+        assert.equal(250000000000000000000000000,allOfferingSupply.toNumber());
 
 		let teamWithdrawSupply =await  cct.teamWithdrawSupply();
 		assert.equal(0,teamWithdrawSupply.toNumber());
@@ -403,7 +403,7 @@ contract('CRCToken', function (accounts) {
     it("团队提现-期望失败，超过提现额度",async function(){
         let cct = await setup_crctoken(accounts);
         await cct.setCurrentBlockNum(teamKeepingLockEndBlock+1);
-        await cct.teamKeepingWithdraw(ether_towei_rate(15000000),{from:accounts[1],value:0});
+        await cct.teamKeepingWithdraw(ether_towei_rate(75000000),{from:accounts[1],value:0});
         try {
             await cct.teamKeepingWithdraw(ether_towei_rate(1),{from:accounts[1],value:0});
             //因为期望抛异常，故不会进入这里，若进入，则单元测试失败
@@ -414,9 +414,9 @@ contract('CRCToken', function (accounts) {
         let balance = await cct.balanceOf(accounts[1]);
         let totalSupply=await cct.totalSupply();
         let teamWithdrawSupply =await  cct.teamWithdrawSupply();
-        assert.equal(15000000000000000000000000,totalSupply.toNumber());
-        assert.equal(15000000000000000000000000,balance.toNumber());
-        assert.equal(15000000000000000000000000,teamWithdrawSupply.toNumber());
+        assert.equal(75000000000000000000000000,totalSupply.toNumber());
+        assert.equal(75000000000000000000000000,balance.toNumber());
+        assert.equal(75000000000000000000000000,teamWithdrawSupply.toNumber());
 
 		let privateOfferingSupply =await cct.privateOfferingSupply();
 		assert.equal(0,privateOfferingSupply.toNumber());
@@ -429,13 +429,13 @@ contract('CRCToken', function (accounts) {
     it("团队提现-期望成功",async function(){
         let cct = await setup_crctoken(accounts);
         await cct.setCurrentBlockNum(teamKeepingLockEndBlock+1);
-        await cct.teamKeepingWithdraw(ether_towei_rate(15000000),{from:accounts[1],value:0});
+        await cct.teamKeepingWithdraw(ether_towei_rate(75000000),{from:accounts[1],value:0});
         let balance = await cct.balanceOf(accounts[1]);
         let totalSupply=await cct.totalSupply();
         let teamWithdrawSupply =await  cct.teamWithdrawSupply();
-        assert.equal(15000000000000000000000000,balance.toNumber());
-        assert.equal(15000000000000000000000000,totalSupply.toNumber());
-        assert.equal(15000000000000000000000000,teamWithdrawSupply.toNumber());
+        assert.equal(75000000000000000000000000,balance.toNumber());
+        assert.equal(75000000000000000000000000,totalSupply.toNumber());
+        assert.equal(75000000000000000000000000,teamWithdrawSupply.toNumber());
 		let privateOfferingSupply =await cct.privateOfferingSupply();
 		assert.equal(0,privateOfferingSupply.toNumber());
 		let communityContributionSupply =await  cct.communityContributionSupply();
@@ -488,7 +488,7 @@ contract('CRCToken', function (accounts) {
 
     it("社区提现-期望失败，超过提现额度",async function(){
         let cct = await setup_crctoken(accounts);
-        await cct.communityContributionWithdraw(ether_towei_rate(35000000),{from:accounts[1],value:0});
+        await cct.communityContributionWithdraw(ether_towei_rate(175000000),{from:accounts[1],value:0});
         try {
             await cct.communityContributionWithdraw(ether_towei_rate(1),{from:accounts[1],value:0});
             //因为期望抛异常，故不会进入这里，若进入，则单元测试失败
@@ -499,9 +499,9 @@ contract('CRCToken', function (accounts) {
         let balance = await cct.balanceOf(accounts[1]);
         let totalSupply=await cct.totalSupply();
         let communityContributionSupply =await  cct.communityContributionSupply();
-        assert.equal(35000000000000000000000000,totalSupply.toNumber());
-        assert.equal(35000000000000000000000000,balance.toNumber());
-        assert.equal(35000000000000000000000000,communityContributionSupply.toNumber());
+        assert.equal(175000000000000000000000000,totalSupply.toNumber());
+        assert.equal(175000000000000000000000000,balance.toNumber());
+        assert.equal(175000000000000000000000000,communityContributionSupply.toNumber());
 		let privateOfferingSupply =await cct.privateOfferingSupply();
 		assert.equal(0,privateOfferingSupply.toNumber());
     });
@@ -509,14 +509,14 @@ contract('CRCToken', function (accounts) {
 
     it("社区提现-期望成功",async function(){
         let cct = await setup_crctoken(accounts);
-        await cct.communityContributionWithdraw(ether_towei_rate(35000000),{from:accounts[1],value:0});
+        await cct.communityContributionWithdraw(ether_towei_rate(175000000),{from:accounts[1],value:0});
         let balance = await cct.balanceOf(accounts[1]);
         let totalSupply=await cct.totalSupply();
 
-        assert.equal(35000000000000000000000000,balance.toNumber());
-        assert.equal(35000000000000000000000000,totalSupply.toNumber());
+        assert.equal(175000000000000000000000000,balance.toNumber());
+        assert.equal(175000000000000000000000000,totalSupply.toNumber());
 		let communityContributionSupply =await  cct.communityContributionSupply();
-        assert.equal(35000000000000000000000000,communityContributionSupply.toNumber());
+        assert.equal(175000000000000000000000000,communityContributionSupply.toNumber());
 		let privateOfferingSupply =await cct.privateOfferingSupply();
 		assert.equal(0,privateOfferingSupply.toNumber());
     });
@@ -557,7 +557,7 @@ contract('CRCToken', function (accounts) {
 
     it("平台提现-期望失败，超过提现额度",async function(){
         let cct = await setup_crctoken(accounts);
-        await cct.icoPlatformWithdraw(ether_towei_rate(50000000),{from:accounts[1],value:0});
+        await cct.icoPlatformWithdraw(ether_towei_rate(250000000),{from:accounts[1],value:0});
         try {
             await cct.icoPlatformWithdraw(ether_towei_rate(1),{from:accounts[1],value:0});
             //因为期望抛异常，故不会进入这里，若进入，则单元测试失败
@@ -568,9 +568,9 @@ contract('CRCToken', function (accounts) {
         let balance = await cct.balanceOf(accounts[1]);
         let totalSupply=await cct.totalSupply();
         let allOfferingSupply =await  cct.allOfferingSupply();
-        assert.equal(50000000000000000000000000,allOfferingSupply.toNumber());
-        assert.equal(50000000000000000000000000,totalSupply.toNumber());
-        assert.equal(50000000000000000000000000,balance.toNumber());
+        assert.equal(250000000000000000000000000,allOfferingSupply.toNumber());
+        assert.equal(250000000000000000000000000,totalSupply.toNumber());
+        assert.equal(250000000000000000000000000,balance.toNumber());
 		let privateOfferingSupply =await cct.privateOfferingSupply();
 		assert.equal(0,privateOfferingSupply.toNumber());
 
@@ -579,13 +579,13 @@ contract('CRCToken', function (accounts) {
 
     it("平台提现-期望成功",async function(){
         let cct = await setup_crctoken(accounts);
-        await cct.icoPlatformWithdraw(ether_towei_rate(50000000),{from:accounts[1],value:0});
+        await cct.icoPlatformWithdraw(ether_towei_rate(250000000),{from:accounts[1],value:0});
         let balance = await cct.balanceOf(accounts[1]);
         let totalSupply=await cct.totalSupply();
         let allOfferingSupply =await  cct.allOfferingSupply();
-        assert.equal(50000000000000000000000000,allOfferingSupply.toNumber());
-        assert.equal(50000000000000000000000000,balance.toNumber());
-        assert.equal(50000000000000000000000000,totalSupply.toNumber());
+        assert.equal(250000000000000000000000000,allOfferingSupply.toNumber());
+        assert.equal(250000000000000000000000000,balance.toNumber());
+        assert.equal(250000000000000000000000000,totalSupply.toNumber());
 		let privateOfferingSupply =await cct.privateOfferingSupply();
 		assert.equal(0,privateOfferingSupply.toNumber());
 
