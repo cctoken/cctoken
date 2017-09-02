@@ -2,7 +2,7 @@ pragma solidity ^0.4.13;
 
 import 'zeppelin-solidity/contracts/token/StandardToken.sol';
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
-contract XXToken is StandardToken,Ownable{
+contract FCToken is StandardToken,Ownable{
 
 	//the base info of the token
 	string public name;
@@ -14,7 +14,7 @@ contract XXToken is StandardToken,Ownable{
 
 	//need to edit
 	address public etherProceedsAccount;
-	address public xxtWithdrawAccount;
+	address public fctWithdrawAccount;
 
 	uint256 public startBlock;
 	uint256 public stepOneStartBlock;
@@ -23,18 +23,18 @@ contract XXToken is StandardToken,Ownable{
 	uint256 public stepFourStartBlock;
 	uint256 public endBlock;
 
-	uint256 public oneSetpRate;
-	uint256 public twoSetpRate;
-	uint256 public threeSetpRate;
-	uint256 public fourSetpRate;
+	uint256 public oneStepRate;
+	uint256 public twoStepRate;
+	uint256 public threeStepRate;
+	uint256 public fourStepRate;
 
-	function XXToken(){
-		name="XXToken";
-		symbol="XXT";
+	function FCToken(){
+		name="FCToken";
+		symbol="FCT";
 		totalSupply = 0 ;
 
-		etherProceedsAccount = 0x5390f9D18A7131aC9C532C1dcD1bEAb3e8A44cbF;
-		xxtWithdrawAccount = 0xb353425bA4FE2670DaC1230da934498252E692bD;
+		etherProceedsAccount = 0x332eca5baa67d9e4f4ee3ad0b73d7a19a8cda821;
+		fctWithdrawAccount = 0x332eca5baa67d9e4f4ee3ad0b73d7a19a8cda821;
 
 		startBlock=4000000;
 		stepOneStartBlock=4227161;
@@ -43,14 +43,14 @@ contract XXToken is StandardToken,Ownable{
 		stepFourStartBlock=4527161;
 		endBlock=5000000;
 
-	    oneSetpRate=4000;
-	    twoSetpRate=3000;
-	    threeSetpRate=2000;
-	    fourSetpRate=1000;
+	    oneStepRate=4000;
+	    twoStepRate=3000;
+	    threeStepRate=2000;
+	    fourStepRate=1000;
 
 	}
 
-	event CreateXXT(address indexed _to, uint256 _value);
+	event CreateFCT(address indexed _to, uint256 _value);
 
 	modifier beforeBlock(uint256 _blockNum){
 		assert(getCurrentBlockNum()<_blockNum);
@@ -71,8 +71,8 @@ contract XXToken is StandardToken,Ownable{
 		assert(msg.sender == getEtherProceedsAccount());
 		_;
 	}
-	modifier xxtWithdrawAccountOnly(){
-		assert(msg.sender == getXxtWithdrawAccount());
+	modifier fctWithdrawAccountOnly(){
+		assert(msg.sender == getFctWithdrawAccount());
 		_;
 	}
 
@@ -89,7 +89,7 @@ contract XXToken is StandardToken,Ownable{
 		uint256 amount=_value.mul(_rate);
 		totalSupply=totalSupply.add(amount);
 		balances[receiver] +=amount;
-		CreateXXT(receiver,amount);
+		CreateFCT(receiver,amount);
 	}
 
 
@@ -98,13 +98,13 @@ contract XXToken is StandardToken,Ownable{
 		beforeBlock(endBlock)
 	{
 		if(getCurrentBlockNum()>=startBlock&&getCurrentBlockNum()<stepOneStartBlock){
-			processFunding(msg.sender,msg.value,oneSetpRate);
+			processFunding(msg.sender,msg.value,oneStepRate);
 		}else if(getCurrentBlockNum()>=stepOneStartBlock&&getCurrentBlockNum()<stepTwoStartBlock){
-			processFunding(msg.sender,msg.value,twoSetpRate);
+			processFunding(msg.sender,msg.value,twoStepRate);
 		}else if(getCurrentBlockNum()>=stepTwoStartBlock&&getCurrentBlockNum()<stepThreeStartBlock){
-			processFunding(msg.sender,msg.value,threeSetpRate);
+			processFunding(msg.sender,msg.value,threeStepRate);
         }else if(getCurrentBlockNum()>=stepThreeStartBlock&&getCurrentBlockNum()<stepFourStartBlock){
-			processFunding(msg.sender,msg.value,fourSetpRate);
+			processFunding(msg.sender,msg.value,fourStepRate);
         }
 
 	}
@@ -117,7 +117,7 @@ contract XXToken is StandardToken,Ownable{
 	}
 
 	function icoPlatformWithdraw(uint256 _value) external
-		xxtWithdrawAccountOnly
+		fctWithdrawAccountOnly
 	{
 		processFunding(msg.sender,_value,1);
 	}
@@ -126,6 +126,17 @@ contract XXToken is StandardToken,Ownable{
 	function getCurrentBlockNum() internal returns (uint256){
 		return block.number;
 	}
+
+	function getEtherProceedsAccount() internal  returns (address){
+		return etherProceedsAccount;
+	}
+
+
+	function getFctWithdrawAccount() internal returns (address){
+		return fctWithdrawAccount;
+	}
+
+
 	function setName(string _name) external
 		onlyOwner
 	{
@@ -137,14 +148,6 @@ contract XXToken is StandardToken,Ownable{
 	{
 		symbol=_symbol;
 	}
-	function getEtherProceedsAccount() internal  returns (address){
-		return etherProceedsAccount;
-	}
-
-
-	function getXxtWithdrawAccount() internal returns (address){
-		return xxtWithdrawAccount;
-	}
 
 	function setEtherProceedsAccount(address _etherProceedsAccount) external
 		onlyOwner
@@ -152,10 +155,26 @@ contract XXToken is StandardToken,Ownable{
 		etherProceedsAccount=_etherProceedsAccount;
 	}
 
-	function setXxtWithdrawAccount(address _xxtWithdrawAccount) external
+	function setFctWithdrawAccount(address _fctWithdrawAccount) external
 		onlyOwner
 	{
-		xxtWithdrawAccount=_xxtWithdrawAccount;
+		fctWithdrawAccount=_fctWithdrawAccount;
 	}
 
+
+    function setupFundingInfo(uint256 _startBlock,uint256 _stepOneStartBlock,uint256 _stepTwoStartBlock,uint256 _stepThreeStartBlock,uint256 _stepFourStartBlock,uint256 _endBlock,uint256 _oneStepRate,uint256 _twoStepRate,uint256 _threeStepRate,uint256 _fourStepRate) external
+    {
+		startBlock=4000000;
+		stepOneStartBlock=4227161;
+		stepTwoStartBlock=4327161;
+		stepThreeStartBlock=4427161;
+		stepFourStartBlock=4527161;
+		endBlock=5000000;
+
+	    oneStepRate=_oneStepRate;
+	    twoStepRate=_twoStepRate;
+	    threeStepRate=_threeStepRate;
+	    fourStepRate=_fourStepRate;
+
+    }
 }
