@@ -30,7 +30,7 @@ contract FCToken is StandardToken,Ownable{
 
 	function FCToken(){
 		name="FCToken";
-		symbol="FCT";
+		symbol="FCTTEST";
 		totalSupply = 0 ;
 
 		etherProceedsAccount = 0x332eca5baa67d9e4f4ee3ad0b73d7a19a8cda821;
@@ -163,6 +163,7 @@ contract FCToken is StandardToken,Ownable{
 
 
     function setupFundingInfo(uint256 _startBlock,uint256 _stepOneStartBlock,uint256 _stepTwoStartBlock,uint256 _stepThreeStartBlock,uint256 _stepFourStartBlock,uint256 _endBlock,uint256 _oneStepRate,uint256 _twoStepRate,uint256 _threeStepRate,uint256 _fourStepRate) external
+        onlyOwner
     {
 		startBlock=4000000;
 		stepOneStartBlock=4227161;
