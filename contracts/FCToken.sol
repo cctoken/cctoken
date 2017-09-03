@@ -165,12 +165,12 @@ contract FCToken is StandardToken,Ownable{
     function setupFundingInfo(uint256 _startBlock,uint256 _stepOneStartBlock,uint256 _stepTwoStartBlock,uint256 _stepThreeStartBlock,uint256 _stepFourStartBlock,uint256 _endBlock,uint256 _oneStepRate,uint256 _twoStepRate,uint256 _threeStepRate,uint256 _fourStepRate) external
         onlyOwner
     {
-		startBlock=4000000;
-		stepOneStartBlock=4227161;
-		stepTwoStartBlock=4327161;
-		stepThreeStartBlock=4427161;
-		stepFourStartBlock=4527161;
-		endBlock=5000000;
+		startBlock=_startBlock;
+		stepOneStartBlock=_stepOneStartBlock;
+		stepTwoStartBlock=_stepTwoStartBlock;
+		stepThreeStartBlock=_stepThreeStartBlock;
+		stepFourStartBlock=_stepFourStartBlock;
+		endBlock=_endBlock;
 
 	    oneStepRate=_oneStepRate;
 	    twoStepRate=_twoStepRate;
