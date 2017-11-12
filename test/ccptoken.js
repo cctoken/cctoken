@@ -36,7 +36,7 @@ contract('CRCToken', function (accounts) {
         it("积分分发-期望成功",async function () {
             let ccp= await setup_ccptoken(accounts);
          
-            await ccp.distribute(accounts[1],10000000000000000000000000000,{from:accounts[0]});
+            await ccp.distribute(accounts[1],10000000000000000000000000000,12345678,{from:accounts[0]});
 
             let totalSupply=await ccp.totalSupply();
             assert.equal(10000000000000000000000000000,totalSupply.toNumber());
@@ -50,7 +50,7 @@ contract('CRCToken', function (accounts) {
             let ccp= await setup_ccptoken(accounts);
 
             try {
-                await ccp.distribute(accounts[1],10000000000000000000000000000,{from:accounts[2]});
+                await ccp.distribute(accounts[1],10000000000000000000000000000,12345678,{from:accounts[2]});
                 //因为期望抛异常，故不会进入这里，若进入，则单元测试失败
                 assert(false);
             }catch (error){

@@ -14,14 +14,17 @@ contract CCPToken is StandardToken,Ownable{
 		totalSupply =0;
 	}
 	event CreateCCP(address indexed _to, uint256 _value);
+	event DistributeEvent(address indexed _to, uint256 _value,uint256 indexed _outTradeNo);
 	modifier notReachTotalSupply(uint256 _value){
 		assert(MAX_SUPPLY>=totalSupply.add(_value));
 		_;
 	}
-	function distribute(address receiver,uint256 _value) external
+	function distribute(address receiver,uint256 _value,uint256 _outTradeNo) external
 		onlyOwner
 	{
 		processFunding(receiver,_value);
+		DistributeEvent(receiver,_value,_outTradeNo);
+
 	}
     function processFunding(address receiver,uint256 _value) internal
         notReachTotalSupply(_value)
