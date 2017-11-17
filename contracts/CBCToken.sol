@@ -24,7 +24,7 @@ contract CBCToken is StandardToken,Ownable{
 	uint256 public endBlock;
 	address[] public allFundingUsers;
 
-	mapping(address=>uint256) fundBalance;
+	mapping(address=>uint256) public fundBalance;
 	
 
 	function CBCToken(){
