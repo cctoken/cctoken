@@ -1,5 +1,5 @@
-var FCToken = artifacts.require("./FCToken.sol");
+var CBCToken = artifacts.require("./CBCToken.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(FCToken);
+  deployer.deploy(CBCToken);
 };
