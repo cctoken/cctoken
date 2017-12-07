@@ -2,7 +2,7 @@ pragma solidity ^0.4.13;
 
 import 'zeppelin-solidity/contracts/token/StandardToken.sol';
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
-contract FCToken is StandardToken,Ownable{
+contract WCToken is StandardToken,Ownable{
 
 	//the base info of the token
 	string public name;
@@ -16,7 +16,6 @@ contract FCToken is StandardToken,Ownable{
 	address public etherProceedsAccount;
 	address public fctWithdrawAccount;
 
-	uint256 public startBlock;
 	uint256 public stepOneStartBlock;
 	uint256 public stepTwoStartBlock;
 	uint256 public stepThreeStartBlock;
@@ -28,16 +27,15 @@ contract FCToken is StandardToken,Ownable{
 	uint256 public threeStepRate;
 	uint256 public fourStepRate;
 
-	function FCToken(){
-		name="FCToken";
-		symbol="FCTTEST";
+	function WCToken(){
+		name="SDCToken";
+		symbol="SDC";
 		totalSupply = 0 ;
 
-		etherProceedsAccount = 0x332eca5baa67d9e4f4ee3ad0b73d7a19a8cda821;
-		fctWithdrawAccount = 0x332eca5baa67d9e4f4ee3ad0b73d7a19a8cda821;
+		etherProceedsAccount = 0xC1Cfb2c36B3424dBfa406b1FB378F2c41bF6E13f;
+		fctWithdrawAccount = 0xC1Cfb2c36B3424dBfa406b1FB378F2c41bF6E13f;
 
-		startBlock=4000000;
-		stepOneStartBlock=4227161;
+		stepOneStartBlock=0;
 		stepTwoStartBlock=4327161;
 		stepThreeStartBlock=4427161;
 		stepFourStartBlock=4527161;
@@ -50,7 +48,7 @@ contract FCToken is StandardToken,Ownable{
 
 	}
 
-	event CreateFCT(address indexed _to, uint256 _value);
+	event CreateWCToken(address indexed _to, uint256 _value);
 
 	modifier beforeBlock(uint256 _blockNum){
 		assert(getCurrentBlockNum()<_blockNum);
@@ -77,11 +75,6 @@ contract FCToken is StandardToken,Ownable{
 	}
 
 
-	function processFunding(uint256 _value,uint256 _rate) internal
-		notReachTotalSupply(_value,_rate)
-	{
-
-	}
 
 	function processFunding(address receiver,uint256 _value,uint256 _rate) internal
 		notReachTotalSupply(_value,_rate)
@@ -89,21 +82,22 @@ contract FCToken is StandardToken,Ownable{
 		uint256 amount=_value.mul(_rate);
 		totalSupply=totalSupply.add(amount);
 		balances[receiver] +=amount;
-		CreateFCT(receiver,amount);
+		Transfer(0x0, receiver, amount);
+		CreateWCToken(receiver,amount);
 	}
 
 
 	function () payable external
-		afterBlock(startBlock)
+		afterBlock(stepOneStartBlock)
 		beforeBlock(endBlock)
 	{
-		if(getCurrentBlockNum()>=startBlock&&getCurrentBlockNum()<stepOneStartBlock){
+		if(getCurrentBlockNum()>=stepOneStartBlock&&getCurrentBlockNum()<stepTwoStartBlock){
 			processFunding(msg.sender,msg.value,oneStepRate);
-		}else if(getCurrentBlockNum()>=stepOneStartBlock&&getCurrentBlockNum()<stepTwoStartBlock){
-			processFunding(msg.sender,msg.value,twoStepRate);
 		}else if(getCurrentBlockNum()>=stepTwoStartBlock&&getCurrentBlockNum()<stepThreeStartBlock){
+			processFunding(msg.sender,msg.value,twoStepRate);
+		}else if(getCurrentBlockNum()>=stepThreeStartBlock&&getCurrentBlockNum()<stepFourStartBlock){
 			processFunding(msg.sender,msg.value,threeStepRate);
-        }else if(getCurrentBlockNum()>=stepThreeStartBlock&&getCurrentBlockNum()<stepFourStartBlock){
+        }else if(getCurrentBlockNum()>=stepFourStartBlock&&getCurrentBlockNum()<endBlock){
 			processFunding(msg.sender,msg.value,fourStepRate);
         }
 
@@ -162,10 +156,9 @@ contract FCToken is StandardToken,Ownable{
 	}
 
 
-    function setupFundingInfo(uint256 _startBlock,uint256 _stepOneStartBlock,uint256 _stepTwoStartBlock,uint256 _stepThreeStartBlock,uint256 _stepFourStartBlock,uint256 _endBlock,uint256 _oneStepRate,uint256 _twoStepRate,uint256 _threeStepRate,uint256 _fourStepRate) external
+    function setupFundingInfo(uint256 _stepOneStartBlock,uint256 _stepTwoStartBlock,uint256 _stepThreeStartBlock,uint256 _stepFourStartBlock,uint256 _endBlock,uint256 _oneStepRate,uint256 _twoStepRate,uint256 _threeStepRate,uint256 _fourStepRate) external
         onlyOwner
     {
-		startBlock=_startBlock;
 		stepOneStartBlock=_stepOneStartBlock;
 		stepTwoStartBlock=_stepTwoStartBlock;
 		stepThreeStartBlock=_stepThreeStartBlock;
@@ -176,6 +169,5 @@ contract FCToken is StandardToken,Ownable{
 	    twoStepRate=_twoStepRate;
 	    threeStepRate=_threeStepRate;
 	    fourStepRate=_fourStepRate;
-
     }
 }

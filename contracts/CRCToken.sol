@@ -60,8 +60,8 @@ contract CRCToken is StandardToken,Ownable{
 		etherProceedsAccount = 0x5390f9D18A7131aC9C532C1dcD1bEAb3e8A44cbF;
 		crcWithdrawAccount = 0xb353425bA4FE2670DaC1230da934498252E692bD;
 
-		fundingStartBlock=4263161;
-		fundingEndBlock=4313561;
+		fundingStartBlock=0;
+		fundingEndBlock=6000000;
 		teamKeepingLockEndBlock=5577161;
 
 		totalSupply = 0 ;
@@ -126,6 +126,7 @@ contract CRCToken is StandardToken,Ownable{
 		totalSupply=totalSupply.add(tokenAmount);
 		allOfferingSupply=allOfferingSupply.add(tokenAmount);
 		balances[receiver] += tokenAmount;  // safeAdd not needed; bad semantics to use here
+		Transfer(0x0, receiver, tokenAmount);
 		CreateCRC(receiver, tokenAmount);	 // logs token creation
 	}
 

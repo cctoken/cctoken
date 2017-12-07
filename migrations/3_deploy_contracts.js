@@ -1,5 +1,5 @@
-var FCToken = artifacts.require("./FCToken.sol");
+var WCToken = artifacts.require("./WCToken.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(FCToken);
+  deployer.deploy(WCToken);
 };
