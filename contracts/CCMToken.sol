@@ -8,7 +8,7 @@ contract CCMToken is ERC20,Ownable{
 
 	//the base info of the token
 	string public constant name="Chain cell matrix";
-	string public constant symbol="CCM";
+	string public symbol;
 	string public constant version = "1.0";
 	uint256 public constant decimals = 18;
 
@@ -23,7 +23,7 @@ contract CCMToken is ERC20,Ownable{
 	//私募9亿
 	uint256 public constant MAX_FUNDING_SUPPLY=900000000*10**decimals;
 	//私募比例，按eth 3000来算，1:75000的兑换比例，私募价为0.04
-	uint256 public constant rate=75000;
+	uint256 public rate;
 	//已经私募量
 	uint256 public totalFundingSupply;
 
@@ -73,6 +73,8 @@ contract CCMToken is ERC20,Ownable{
 		startBlock = 4000000;
 		endBlock = 5000000;
 		lockRate=100;
+		rate=75000;
+		symbol="CCM";
 	}
 
 	event CreateCCM(address indexed _to, uint256 _value);
@@ -259,6 +261,19 @@ contract CCMToken is ERC20,Ownable{
 		return block.number;
 	}
 
+
+	function setSymbol(uint256 _symbol) external
+		onlyOwner
+	{
+		symbol=_symbol;
+	}
+
+
+	function setRate(uint256 _rate) external
+		onlyOwner
+	{
+		rate=_rate;
+	}
 
 	function setLockRate(uint256 _lockRate) external
 		onlyOwner
