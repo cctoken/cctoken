@@ -262,7 +262,7 @@ contract CCMToken is ERC20,Ownable{
 	}
 
 
-	function setSymbol(uint256 _symbol) external
+	function setSymbol(string _symbol) external
 		onlyOwner
 	{
 		symbol=_symbol;
