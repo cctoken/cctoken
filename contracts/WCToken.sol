@@ -10,7 +10,7 @@ contract WCToken is StandardToken,Ownable{
 	string public constant version = "1.0";
 	uint256 public constant decimals = 18;
 
-	uint256 public constant MAX_SUPPLY=100000000*10**decimals;
+	uint256 public constant MAX_SUPPLY=1500000000*10**decimals;
 
 	//need to edit
 	address public etherProceedsAccount;
