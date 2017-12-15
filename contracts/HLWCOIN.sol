@@ -13,7 +13,9 @@ contract HLWCOIN is ERC20,Ownable{
 
 	uint256 public constant MAX_SUPPLY=200000000*10**decimals;
 
-
+	
+    mapping(address => uint256) balances;
+	mapping (address => mapping (address => uint256)) allowed;
 	event GetETH(address indexed _from, uint256 _value);
 
 	//owner一次性获取代币
