@@ -3,10 +3,10 @@ pragma solidity ^0.4.13;
 import 'zeppelin-solidity/contracts/token/ERC20.sol';
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
-contract EPayToken is ERC20,Ownable{
+contract EPAY is ERC20,Ownable{
 	using SafeMath for uint256;
 
-	string public constant name="EPayToken";
+	string public constant name="EPAY";
 	string public symbol="EPAY";
 	string public constant version = "1.0";
 	uint256 public constant decimals = 18;
@@ -19,7 +19,7 @@ contract EPayToken is ERC20,Ownable{
 	event GetETH(address indexed _from, uint256 _value);
 
 	//owner一次性获取代币
-	function EPayToken(){
+	function EPAY(){
 		balances[msg.sender] = MAX_SUPPLY;
 		Transfer(0x0, msg.sender, MAX_SUPPLY);
 	}
