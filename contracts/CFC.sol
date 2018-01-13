@@ -63,7 +63,7 @@ contract CFC is ERC20,Ownable{
 		onlyOwner
 	{
 		 epoch[] storage epochs = lockEpochsMap[user];
-		 epochs.put(epoch(endTime,amount));
+		 epochs.push(epoch(endTime,amount));
 	}
 
 
