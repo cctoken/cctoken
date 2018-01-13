@@ -75,17 +75,17 @@ contract CFC is ERC20,Ownable{
 		require(_to != address(0));
 		//计算锁仓份额
 		epoch[] epochs = lockEpochsMap[msg.sender];
-		uint256 lockBalance = 0;
+		uint256 needLockBalance = 0;
 		for(uint256 i;i<epochs.length;i++)
 		{
 			//如果当前时间小于当期结束时间,则此期有效
 			if( now < epochs[i].endTime )
 			{
-				lockBalance.add(epochs[i].amount);
+				needLockBalance=needLockBalance.add(epochs[i].amount);
 			}
 		}
 
-		require(balances[msg.sender].sub(_value)>=lockBalance);
+		require(balances[msg.sender].sub(_value)>=needLockBalance);
 		// SafeMath.sub will throw if there is not enough balance.
 		balances[msg.sender] = balances[msg.sender].sub(_value);
 		balances[_to] = balances[_to].add(_value);
@@ -106,17 +106,17 @@ contract CFC is ERC20,Ownable{
 
 		//计算锁仓份额
 		epoch[] epochs = lockEpochsMap[_from];
-		uint256 lockBalance = 0;
+		uint256 needLockBalance = 0;
 		for(uint256 i;i<epochs.length;i++)
 		{
 			//如果当前时间小于当期结束时间,则此期有效
 			if( now < epochs[i].endTime )
 			{
-				lockBalance.add(epochs[i].amount);
+				needLockBalance = needLockBalance.add(epochs[i].amount);
 			}
 		}
 
-		require(balances[_from].sub(_value)>=lockBalance);
+		require(balances[_from].sub(_value)>=needLockBalance);
 		uint256 _allowance = allowed[_from][msg.sender];
 
 		balances[_from] = balances[_from].sub(_value);
