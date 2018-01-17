@@ -61,7 +61,6 @@ contract BIU is ERC20,Ownable{
 		totalSupply = 0 ;
 		totalFundingSupply = 0;
 
-		hasTeamKeepingWithdraw=false;
 		hasOneYearWithdraw=false;
 		hasTwoYearWithdraw=false;
 		hasThreeYearWithdraw=false;
