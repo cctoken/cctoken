@@ -152,7 +152,7 @@ contract BIU is ERC20,Ownable{
 	function withdrawForOneYear() external
 		onlyOwner
 		assertFalse(hasOneYearWithdraw)
-		notBeforeTime(1546272000)
+		notBeforeTime(1514736000)
 	{
 		processFunding(msg.sender,ONE_YEAR_KEEPING,1);
 		//标记团队已提现
@@ -163,7 +163,7 @@ contract BIU is ERC20,Ownable{
 	function withdrawForTwoYear() external
 		onlyOwner
 		assertFalse(hasTwoYearWithdraw)
-		notBeforeTime(1577808000)
+		notBeforeTime(1546272000)
 	{
 		processFunding(msg.sender,TWO_YEAR_KEEPING,1);
 		//标记团队已提现
@@ -174,7 +174,7 @@ contract BIU is ERC20,Ownable{
 	function withdrawForThreeYear() external
 		onlyOwner
 		assertFalse(hasThreeYearWithdraw)
-		notBeforeTime(1609344000)
+		notBeforeTime(1577808000)
 	{
 		processFunding(msg.sender,THREE_YEAR_KEEPING,1);
 		//标记团队已提现
@@ -186,7 +186,7 @@ contract BIU is ERC20,Ownable{
 	function withdrawForFourYear() external
 		onlyOwner
 		assertFalse(hasFourYearWithdraw)
-		notBeforeTime(1640880000)
+		notBeforeTime(1609344000)
 	{
 		processFunding(msg.sender,FOUR_YEAR_KEEPING,1);
 		//标记团队已提现
@@ -198,7 +198,7 @@ contract BIU is ERC20,Ownable{
 	function withdrawForFiveYear() external
 		onlyOwner
 		assertFalse(hasFiveYearWithdraw)
-		notBeforeTime(1672416000)
+		notBeforeTime(1640880000)
 	{
 		processFunding(msg.sender,FIVE_YEAR_KEEPING,1);
 		//标记团队已提现
