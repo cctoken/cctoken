@@ -35,18 +35,17 @@ contract CrowSale is Ownable{
 			require(msg.value>=100000000000000000);
 			require(now>stepOneStartTime);
 			require(now<=endTime);
-			
+			uint256 amount=0;
 			if(now>stepOneStartTime&&now<=stepTwoStartTime){
 				processFunding(msg.sender,msg.value,setpOneRate);
-				uint256 amount=msg.value.mul(setpOneRate);
-				totalFundingSupply = totalFundingSupply.add(amount);
+				amount=msg.value.mul(setpOneRate);
 			}else if(now>stepTwoStartTime&&now<=endTime){
 				processFunding(msg.sender,msg.value,setpTwoRate);
-				uint256 amount=msg.value.mul(setpTwoRate);
-				totalFundingSupply = totalFundingSupply.add(amount);
+				amount=msg.value.mul(setpTwoRate);
 			}else{
 				revert();
 			}
+			totalFundingSupply = totalFundingSupply.add(amount);
 	}
 
     function withdrawCoinToOwner(uint256 _value) external
