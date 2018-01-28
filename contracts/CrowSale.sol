@@ -25,7 +25,6 @@ contract CrowSale is Ownable{
 		endTime=0;
 
 		totalFundingSupply = 0;
-		totalSupply = 0;
 		token=ERC20(0xe177ccb051621687bee98bfc4bdea6d479bac83e);
 	}
 
