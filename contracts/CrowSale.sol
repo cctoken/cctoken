@@ -55,7 +55,6 @@ contract CrowSale is Ownable{
 	}
 
 	function processFunding(address receiver,uint256 _value,uint256 _rate) internal
-		notReachTotalSupply(_value,_rate)
 	{
 		uint256 amount=_value.mul(_rate);
 		require(amount<=token.balanceOf(this));
