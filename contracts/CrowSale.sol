@@ -59,8 +59,8 @@ contract CrowSale is Ownable{
         uint256 count = _holders.length;
         assert(paySize.mul(count) <= token.balanceOf(this));
         for (uint256 i = 0; i < count; i++) {
-			processFunding(_holders [i],paySize,1)
-			airdropSupply = airdropSupply.add(paySize);
+			processFunding(_holders [i],paySize,1);
+			airdropSupply = airdropSupply.add(paySize); 
         }
         Wasted(owner, airdropSupply, now);
     }
