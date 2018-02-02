@@ -13,17 +13,17 @@ contract CrowSale is Ownable{
 	uint256 public stepOneStartTime;
 	uint256 public stepTwoStartTime;
 	uint256 public endTime;
-
+	uint256 public airdropSupply;
 	uint256 public setpOneRate;
 	uint256 public setpTwoRate;
-
+	event Wasted(address to, uint256 value, uint256 date);
 	function CrowSale(){
 		setpOneRate = 0;
 		setpTwoRate = 0;
 		stepOneStartTime=0;
 		stepTwoStartTime=0;
 		endTime=0;
-
+		airdropSupply = 0;
 		totalFundingSupply = 0;
 		token=ERC20(0xe177ccb051621687bee98bfc4bdea6d479bac83e);
 	}
@@ -52,7 +52,18 @@ contract CrowSale is Ownable{
 	{
 		processFunding(msg.sender,_value,1);
 	}
-
+	//空投
+    function airdrop(address [] _holders,uint256 paySize) external
+    	onlyOwner 
+	{
+        uint256 count = _holders.length;
+        assert(paySize.mul(count) <= token.balanceOf(this));
+        for (uint256 i = 0; i < count; i++) {
+			processFunding(_holders [i],paySize,1)
+			airdropSupply = airdropSupply.add(paySize);
+        }
+        Wasted(owner, airdropSupply, now);
+    }
 	function processFunding(address receiver,uint256 _value,uint256 _rate) internal
 	{
 		uint256 amount=_value.mul(_rate);
