@@ -8,7 +8,7 @@ contract SeekerCoin is ERC20,Ownable{
 
 	//the base info of the token
 	string public constant name="Seeker Coin";
-	string public symbol="待定";
+	string public constant symbol="SEC";
 	string public constant version = "1.0";
 	uint256 public constant decimals = 18;
 
