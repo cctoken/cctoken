@@ -3,7 +3,6 @@ pragma solidity ^0.4.13;
 import 'zeppelin-solidity/contracts/token/ERC20.sol';
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
-import 'contract_store_api/contracts/Generatable.sol';
 contract BoLuoPay is ERC20,Ownable{
 	using SafeMath for uint256;
 
