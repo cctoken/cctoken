@@ -142,5 +142,3 @@ contract BoLuoPay is ERC20,Ownable{
   	}
 
 }
-
-}
