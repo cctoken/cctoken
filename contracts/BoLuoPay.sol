@@ -25,7 +25,7 @@ contract BoLuoPay is ERC20,Ownable{
 	mapping (address => mapping (address => uint256)) allowed;
     event Wasted(address to, uint256 value, uint256 date);
 
-	function SuperToken(){
+	function BoLuoPay(){
 		name = "BoLuoPay";
 		symbol = "boluo";
 		totalSupply = 0;
