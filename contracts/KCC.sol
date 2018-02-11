@@ -12,7 +12,7 @@ contract KCC is ERC20,Ownable{
 	string public constant version = "1.0";
 	uint256 public constant decimals = 18;
 
-	uint256 public constant INIT_SUPPLY=1000000000*10**decimals;
+	uint256 public constant MAX_SUPPLY=1000000000*10**decimals;
 	uint256 public airdropSupply;
 
     mapping(address => uint256) balances;
@@ -20,10 +20,10 @@ contract KCC is ERC20,Ownable{
 	
 
 	function KCC(){
-		totalSupply = INIT_SUPPLY;
+		totalSupply = MAX_SUPPLY;
 		airdropSupply=0;
-		balances[msg.sender] = INIT_SUPPLY;
-		Transfer(0x0, msg.sender, INIT_SUPPLY);
+		balances[msg.sender] = MAX_SUPPLY;
+		Transfer(0x0, msg.sender, MAX_SUPPLY);
 	}
 
 
