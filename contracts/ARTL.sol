@@ -33,7 +33,7 @@ contract ARTL is StandardToken,Ownable{
 	}
 
 	event CreateARTL(address indexed _to, uint256 _value);
-
+	
 	modifier beforeBlock(uint256 _blockNum){
 		assert(getCurrentBlockNum()<_blockNum);
 		_;

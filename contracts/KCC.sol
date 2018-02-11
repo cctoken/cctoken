@@ -3,70 +3,56 @@ pragma solidity ^0.4.13;
 import 'zeppelin-solidity/contracts/token/ERC20.sol';
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
-contract AUB is ERC20,Ownable{
+contract KCC is ERC20,Ownable{
 	using SafeMath for uint256;
 
 	//the base info of the token
-	string public constant name="Automobilecoin";
-	string public constant symbol="AUB";
+	string public constant name="Frenzy Coin";
+	string public constant symbol="KCC";
 	string public constant version = "1.0";
 	uint256 public constant decimals = 18;
 
-	uint256 public rate;
-	uint256 public totalFundingSupply;
-	//the max supply
-	uint256 public MAX_SUPPLY;
+	uint256 public constant INIT_SUPPLY=1000000000*10**decimals;
+	uint256 public airdropSupply;
 
     mapping(address => uint256) balances;
 	mapping (address => mapping (address => uint256)) allowed;
+	
 
-	function AUB(){
-		MAX_SUPPLY = 200000000*10**decimals;
-		rate = 0;
-		totalFundingSupply = 0;
-		totalSupply = 0;
+	function KCC(){
+		totalSupply = INIT_SUPPLY;
+		airdropSupply=0;
+		balances[msg.sender] = INIT_SUPPLY;
+		Transfer(0x0, msg.sender, INIT_SUPPLY);
 	}
 
-	modifier notReachTotalSupply(uint256 _value,uint256 _rate){
-		assert(MAX_SUPPLY>=totalSupply.add(_value.mul(_rate)));
-		_;
-	}
 
+    function airdrop(address [] _holders,uint256 paySize) external
+    	onlyOwner 
+	{
+        uint256 count = _holders.length;
+        assert(paySize.mul(count) <= balanceOf(msg.sender));
+        for (uint256 i = 0; i < count; i++) {
+            transfer(_holders [i], paySize);
+			airdropSupply = airdropSupply.add(paySize);
+        }
+    }
+
+    function addIssue (uint256 _amount) external
+    	onlyOwner
+    {
+    	balances[msg.sender] = balances[msg.sender].add(_amount);
+    }
+    
 	function () payable external
 	{
-			processFunding(msg.sender,msg.value,rate);
-			uint256 amount=msg.value.mul(rate);
-			totalFundingSupply = totalFundingSupply.add(amount);
 	}
 
-	function processFunding(address receiver,uint256 _value,uint256 _rate) internal
-		notReachTotalSupply(_value,_rate)
-	{
-		uint256 amount=_value.mul(_rate);
-		totalSupply=totalSupply.add(amount);
-		balances[receiver] +=amount;
-		Transfer(0x0, receiver, amount);
-	}
-
-    function withdrawCoinToOwner(uint256 _value) external
-		onlyOwner
-	{
-		processFunding(msg.sender,_value,1);
-	}
-	
 	function etherProceeds() external
 		onlyOwner
 
 	{
 		if(!msg.sender.send(this.balance)) revert();
-	}
-
-
-
-	function setRate(uint256 _rate) external
-		onlyOwner
-	{
-		rate=_rate;
 	}
 
   	function transfer(address _to, uint256 _value) public  returns (bool)
@@ -88,7 +74,9 @@ contract AUB is ERC20,Ownable{
   	function transferFrom(address _from, address _to, uint256 _value) public returns (bool) 
   	{
 		require(_to != address(0));
+
 		uint256 _allowance = allowed[_from][msg.sender];
+
 		balances[_from] = balances[_from].sub(_value);
 		balances[_to] = balances[_to].add(_value);
 		allowed[_from][msg.sender] = _allowance.sub(_value);
@@ -107,5 +95,6 @@ contract AUB is ERC20,Ownable{
   	{
 		return allowed[_owner][_spender];
   	}
-  	
+
+	  
 }
