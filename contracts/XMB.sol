@@ -12,6 +12,8 @@ contract XMB is ERC20,Ownable{
 	string public constant version = "1.0";
 	uint256 public constant decimals = 18;
 
+    mapping(address => uint256) balances;
+	mapping (address => mapping (address => uint256)) allowed;
 	//总发行10亿
 	uint256 public constant MAX_SUPPLY=1000000000*10**decimals;
 	//初始发行3亿，用于空投和团队保留
