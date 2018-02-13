@@ -107,13 +107,13 @@ contract XMB is ERC20,Ownable{
 			if(now > stepOneStartTime&&now<=stepOneEndTime){
 				processFunding(msg.sender,msg.value,stepOneRate);
 				//设置锁仓
-				uint256 lockAmount = msg.value.mul(stepOneRate);
-				lockBalance(msg.sender,lockAmount,stepOneLockEndTime);
+				uint256 stepOnelockAmount = msg.value.mul(stepOneRate);
+				lockBalance(msg.sender,stepOnelockAmount,stepOneLockEndTime);
 			}else if(now > stepTwoStartTime&&now<=stepTwoEndTime){
 				processFunding(msg.sender,msg.value,stepTwoRate);
 				//设置锁仓
-				uint256 lockAmount = msg.value.mul(stepTwoRate);
-				lockBalance(msg.sender,lockAmount,stepTwoLockEndTime);				
+				uint256 stepTwolockAmount = msg.value.mul(stepTwoRate);
+				lockBalance(msg.sender,stepTwolockAmount,stepTwoLockEndTime);				
 			}else{
 				revert();
 			}
