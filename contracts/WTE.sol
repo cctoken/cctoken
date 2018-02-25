@@ -13,8 +13,6 @@ contract WTE is ERC20,Ownable{
 	uint256 public constant decimals = 18;
 
 
-	//天使投资人持有2.7亿
-	uint256 public constant PARTNER_SUPPLY=270000000*10**decimals;
 
 	//私募6.48亿
 	uint256 public constant MAX_PRIVATE_FUNDING_SUPPLY=648000000*10**decimals;
@@ -25,8 +23,12 @@ contract WTE is ERC20,Ownable{
 	//顾问奖励0.9亿
 	uint256 public constant ADVISOR_REWARD=90000000*10**decimals;
 
-	//可普通提现额度2.7+6.48+2.7+0.9=12.78亿
-	uint256 public constant COMMON_WITHDRAW_SUPPLY=PARTNER_SUPPLY+MAX_PRIVATE_FUNDING_SUPPLY+COOPERATE_REWARD+ADVISOR_REWARD;
+	//可普通提现额度6.48+2.7+0.9=10.08亿
+	uint256 public constant COMMON_WITHDRAW_SUPPLY=MAX_PRIVATE_FUNDING_SUPPLY+COOPERATE_REWARD+ADVISOR_REWARD;
+
+	//天使投资人持有2.7亿
+	uint256 public constant PARTNER_SUPPLY=270000000*10**decimals;
+
 
 	//公募1.8亿
 	uint256 public constant MAX_PUBLIC_FUNDING_SUPPLY=180000000*10**decimals;
@@ -34,8 +36,8 @@ contract WTE is ERC20,Ownable{
 	//团队奖励3.42亿
 	uint256 public constant TEAM_KEEPING=342000000*10**decimals;
 
-	//总发行12.78+1.8+3.42=18亿
-	uint256 public constant MAX_SUPPLY=COMMON_WITHDRAW_SUPPLY+MAX_PUBLIC_FUNDING_SUPPLY+TEAM_KEEPING;
+	//总发行10.08+2.7+1.8+3.42=18亿
+	uint256 public constant MAX_SUPPLY=COMMON_WITHDRAW_SUPPLY+PARTNER_SUPPLY+MAX_PUBLIC_FUNDING_SUPPLY+TEAM_KEEPING;
 
 
 	//公募比例默认18300
@@ -52,6 +54,8 @@ contract WTE is ERC20,Ownable{
 
 	//已经普通提现量
 	uint256 public totalCommonWithdrawSupply;
+	//天使投资人已经提现额度
+	uint256 public totalPartnerWithdrawSupply;
 
 	//已经公募量
 	uint256 public totalPublicFundingSupply;
@@ -79,6 +83,7 @@ contract WTE is ERC20,Ownable{
 	function WTE(){
 		totalSupply = 0 ;
 		totalCommonWithdrawSupply=0;
+		totalPartnerWithdrawSupply=0;
 		totalPublicFundingSupply = 0;
 		hasTeamKeepingWithdraw=false;
 
@@ -106,6 +111,13 @@ contract WTE is ERC20,Ownable{
 		assert(COMMON_WITHDRAW_SUPPLY>=totalCommonWithdrawSupply.add(_value.mul(_rate)));
 		_;
 	}
+
+
+	modifier notReachPartnerWithdrawSupply(uint256 _value,uint256 _rate){
+		assert(PARTNER_SUPPLY>=totalPartnerWithdrawSupply.add(_value.mul(_rate)));
+		_;
+	}
+
 
 	modifier assertFalse(bool withdrawStatus){
 		assert(!withdrawStatus);
@@ -166,7 +178,16 @@ contract WTE is ERC20,Ownable{
 		hasTeamKeepingWithdraw = true;
 	}
 
-
+	//提币给投资人，需要限制转账
+	function withdrawToPartner(address _to,uint256 _value) external
+		onlyOwner
+		notReachPartnerWithdrawSupply(_value,1)
+	{
+		processFunding(_to,_value,1);
+		totalPartnerWithdrawSupply=totalPartnerWithdrawSupply.add(_value);
+		//锁仓到20180609
+		lockBalance(_to,_value,1528473600);
+	}
 
 	//公募，不超过最大公募份额,要在公募时间内
 	function () payable external
@@ -268,8 +289,7 @@ contract WTE is ERC20,Ownable{
   	//-----------管理接口start----------------//
 
   	//锁仓接口，可分多期锁仓，多期锁仓金额可累加，这里的锁仓是指限制转账
-	function lockBalance(address user, uint256 lockAmount,uint256 lockEndTime) external
-		onlyOwner
+	function lockBalance(address user, uint256 lockAmount,uint256 lockEndTime) internal
 	{
 		 epoch[] storage epochs = lockEpochsMap[user];
 		 epochs.push(epoch(lockEndTime,lockAmount));
