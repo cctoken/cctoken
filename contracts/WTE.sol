@@ -199,7 +199,7 @@ contract WTE is ERC20,Ownable{
 		//计算锁仓份额
 		epoch[] epochs = lockEpochsMap[msg.sender];
 		uint256 needLockBalance = 0;
-		for(uint256 i;i<epochs.length;i++)
+		for(uint256 i = 0;i<epochs.length;i++)
 		{
 			//如果当前时间小于当期结束时间,则此期有效
 			if( now < epochs[i].lockEndTime )
@@ -231,7 +231,7 @@ contract WTE is ERC20,Ownable{
 		//计算锁仓份额
 		epoch[] epochs = lockEpochsMap[_from];
 		uint256 needLockBalance = 0;
-		for(uint256 i;i<epochs.length;i++)
+		for(uint256 i = 0;i<epochs.length;i++)
 		{
 			//如果当前时间小于当期结束时间,则此期有效
 			if( now < epochs[i].lockEndTime )
