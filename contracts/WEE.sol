@@ -86,7 +86,7 @@ contract WEE is ERC20,Ownable{
 		startTime = 1525104000;
 		endTime = 1525104000;
 		rate=3000;
-		publicFundingPersonalEthLimit = 10;
+		publicFundingPersonalEthLimit = 10000000000000000000;
 	}
 
 	event CreateWEE(address indexed _to, uint256 _value);
