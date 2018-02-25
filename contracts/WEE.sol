@@ -13,11 +13,11 @@ contract WEE is ERC20,Ownable{
 	uint256 public constant decimals = 18;
 
 
-	//天使投资人持有1.44亿
-	uint256 public constant PARTNER_SUPPLY=144000000*10**decimals;
+	//天使投资人持有2.7亿
+	uint256 public constant PARTNER_SUPPLY=270000000*10**decimals;
 
-	//私募8.64亿
-	uint256 public constant MAX_PRIVATE_FUNDING_SUPPLY=864000000*10**decimals;
+	//私募6.48亿
+	uint256 public constant MAX_PRIVATE_FUNDING_SUPPLY=648000000*10**decimals;
 
 	//共建者奖励2.7亿
 	uint256 public constant COOPERATE_REWARD=270000000*10**decimals;
@@ -25,20 +25,20 @@ contract WEE is ERC20,Ownable{
 	//顾问奖励0.9亿
 	uint256 public constant ADVISOR_REWARD=90000000*10**decimals;
 
-	//可普通提现额度1.44+8.64+2.7+0.9=13.68亿
+	//可普通提现额度2.7+6.48+2.7+0.9=12.78亿
 	uint256 public constant COMMON_WITHDRAW_SUPPLY=PARTNER_SUPPLY+MAX_PRIVATE_FUNDING_SUPPLY+COOPERATE_REWARD+ADVISOR_REWARD;
 
-	//公募1.62亿
-	uint256 public constant MAX_PUBLIC_FUNDING_SUPPLY=162000000*10**decimals;
+	//公募1.8亿
+	uint256 public constant MAX_PUBLIC_FUNDING_SUPPLY=180000000*10**decimals;
 
-	//团队奖励2.7亿
-	uint256 public constant TEAM_KEEPING=270000000*10**decimals;
+	//团队奖励3.42亿
+	uint256 public constant TEAM_KEEPING=342000000*10**decimals;
 
-	//总发行13.68+1.62+2.7=18亿
+	//总发行12.78+1.8+3.42=18亿
 	uint256 public constant MAX_SUPPLY=COMMON_WITHDRAW_SUPPLY+MAX_PUBLIC_FUNDING_SUPPLY+TEAM_KEEPING;
 
 
-	//公募比例默认3000
+	//公募比例默认18300
 	uint256 public rate;
 
 	//公募白名单
@@ -85,7 +85,7 @@ contract WEE is ERC20,Ownable{
 		//公募开始结束时间先设置为2018年5月1日，后面再调整
 		startTime = 1525104000;
 		endTime = 1525104000;
-		rate=3000;
+		rate=18300;
 		publicFundingPersonalEthLimit = 10000000000000000000;
 	}
 
