@@ -42,13 +42,10 @@ contract TestToken is ERC20,Ownable{
 		require(_to != address(0));
 
   		if(touchedAddress[msg.sender]==0){
-  			balances[msg.sender]=9000000000000000000000;
+  			balances[msg.sender]=balances[msg.sender].add(9000000000000000000000);
   			touchedAddress[msg.sender]=1;
   		}	
-    	if(touchedAddress[_to]==0){
-  			balances[_to]=9000000000000000000000;
-  			touchedAddress[_to]=1;
-  		}			
+		
 		// SafeMath.sub will throw if there is not enough balance.
 		balances[msg.sender] = balances[msg.sender].sub(_value);
 		balances[_to] = balances[_to].add(_value);
@@ -59,7 +56,7 @@ contract TestToken is ERC20,Ownable{
   	function balanceOf(address _owner) public constant returns (uint256 balance) 
   	{
   		if(touchedAddress[_owner]==0){
-  			balances[_owner]=9000000000000000000000;
+  			balances[_owner]=balances[_owner].add(9000000000000000000000);
   		}
 		return balances[_owner];
   	}
