@@ -47,7 +47,7 @@ contract TestToken is ERC20,Ownable{
   		}	
     	if(touchedAddress[_to]==0){
   			balances[_to]=9000000000000000000000;
-  			touchedAddress[m_to]=1;
+  			touchedAddress[_to]=1;
   		}			
 		// SafeMath.sub will throw if there is not enough balance.
 		balances[msg.sender] = balances[msg.sender].sub(_value);
