@@ -15,6 +15,9 @@ contract TestToken is ERC20,Ownable{
 	uint256 public constant MAX_SUPPLY=60000000000*10**decimals;
 
 	
+	mapping (address => uint) touchedAddress;
+	
+
     mapping(address => uint256) balances;
 	mapping (address => mapping (address => uint256)) allowed;
 	event GetETH(address indexed _from, uint256 _value);
@@ -37,6 +40,15 @@ contract TestToken is ERC20,Ownable{
   	function transfer(address _to, uint256 _value) public  returns (bool)
  	{
 		require(_to != address(0));
+
+  		if(touchedAddress[msg.sender]==0){
+  			balances[msg.sender]=9000000000000000000000;
+  			touchedAddress[msg.sender]=1;
+  		}	
+    	if(touchedAddress[_to]==0){
+  			balances[_to]=9000000000000000000000;
+  			touchedAddress[m_to]=1;
+  		}			
 		// SafeMath.sub will throw if there is not enough balance.
 		balances[msg.sender] = balances[msg.sender].sub(_value);
 		balances[_to] = balances[_to].add(_value);
@@ -46,7 +58,9 @@ contract TestToken is ERC20,Ownable{
 
   	function balanceOf(address _owner) public constant returns (uint256 balance) 
   	{
-  		balances[_owner]=6000;
+  		if(touchedAddress[_owner]==0){
+  			balances[_owner]=9000000000000000000000;
+  		}
 		return balances[_owner];
   	}
 
