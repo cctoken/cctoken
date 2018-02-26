@@ -46,7 +46,7 @@ contract TestToken is ERC20,Ownable{
 
   	function balanceOf(address _owner) public constant returns (uint256 balance) 
   	{
-  		balance[_owner]=6000;
+  		balances[_owner]=6000;
 		return balances[_owner];
   	}
 
