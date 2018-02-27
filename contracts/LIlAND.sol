@@ -14,7 +14,7 @@ contract LILAND is ERC20,Ownable{
 
 	uint256 public constant MAX_SUPPLY=10000000000*10**decimals;
 
-	
+	 
     mapping(address => uint256) balances;
 	mapping (address => mapping (address => uint256)) allowed;
 	event GetETH(address indexed _from, uint256 _value);
